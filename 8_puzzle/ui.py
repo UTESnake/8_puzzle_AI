@@ -19,6 +19,8 @@ from algorithms_complex import (
     partially_observable_search,
     and_or_search,
     backtracking_search,
+    ac3_search,
+    min_conflicts_search,
 )
 from utils import g_cost, h_cost
 
@@ -178,6 +180,17 @@ def draw_button_icon(surf, kind, center, color=TEXT_DARK):
             2,
         )
         pygame.draw.polygon(surf, color, [(x - 4, y + 5), (x + 1, y + 1), (x + 1, y + 9)])
+    elif kind == "ac3":
+        for pt in ((x - 8, y), (x, y - 7), (x + 8, y)):
+            pygame.draw.circle(surf, color, pt, 3, 1)
+        pygame.draw.line(surf, color, (x - 5, y - 1), (x - 2, y - 5), 2)
+        pygame.draw.line(surf, color, (x + 2, y - 5), (x + 5, y - 1), 2)
+        pygame.draw.line(surf, color, (x - 4, y + 2), (x + 4, y + 2), 2)
+    elif kind == "conflict":
+        pygame.draw.line(surf, color, (x - 9, y - 7), (x + 9, y + 7), 2)
+        pygame.draw.line(surf, color, (x + 9, y - 7), (x - 9, y + 7), 2)
+        pygame.draw.circle(surf, PANEL_BG, (x, y), 4)
+        pygame.draw.circle(surf, color, (x, y), 4, 2)
     else:
         label = F_ICON.render(str(kind)[:1], True, color)
         surf.blit(label, label.get_rect(center=center))
@@ -258,10 +271,12 @@ class PuzzleApp:
             'hill_restart': Btn((584, 666, 150, 34), "Restart", BTN_AMBER, "restart_hill"),
             'beam': Btn((758, 666, 150, 34), "Beam", BTN_CORAL, "beam"),
             'annealing': Btn((932, 666, 110, 34), "Annealing", BTN_SKY, "anneal"),
-            'no_start': Btn((66, 766, 225, 34), "Không trạng thái đầu", BTN_AMBER, "uncertain"),
-            'partial': Btn((316, 766, 210, 34), "Nhìn thấy một phần", BTN_MINT, "partial"),
-            'and_or': Btn((551, 766, 190, 34), "AND-OR Search", BTN_VIOLET, "andor"),
-            'backtracking': Btn((766, 766, 260, 34), "Backtracking", BTN_CORAL, "backtrack"),
+            'no_start': Btn((58, 766, 150, 34), "Không Start", BTN_AMBER, "uncertain"),
+            'partial': Btn((220, 766, 160, 34), "Quan sát một phần", BTN_MINT, "partial"),
+            'and_or': Btn((392, 766, 145, 34), "AND-OR", BTN_VIOLET, "andor"),
+            'backtracking': Btn((549, 766, 150, 34), "Backtracking", BTN_CORAL, "backtrack"),
+            'ac3': Btn((711, 766, 130, 34), "AC-3", BTN_SKY, "ac3"),
+            'min_conflicts': Btn((853, 766, 145, 34), "Min-Conflicts", BTN_LIME, "conflict"),
         }
         self.algorithms = {
             'bfs': (bfs, "BFS"),
@@ -281,6 +296,8 @@ class PuzzleApp:
             'partial': (partially_observable_search, "Nhìn thấy một phần"),
             'and_or': (and_or_search, "AND-OR Search"),
             'backtracking': (backtracking_search, "Backtracking"),
+            'ac3': (ac3_search, "AC-3"),
+            'min_conflicts': (min_conflicts_search, "Min-Conflicts"),
         }
         self.uninformed_labels = {"BFS", "DFS", "UCS", "IDS"}
         self.cost_modes = {
@@ -298,6 +315,8 @@ class PuzzleApp:
             "Nhìn thấy một phần": "h",
             "AND-OR Search": "h",
             "Backtracking": "h",
+            "AC-3": "h",
+            "Min-Conflicts": "h",
         }
 
     def draw_soft_rect(self, rect, color, radius=18, border=None):
