@@ -1,20 +1,60 @@
-# 8-Puzzle Search Algorithms
+# 8-Puzzle AI - Search Algorithms Visualization
 
-## 1. Giới thiệu đề tài
+## 0. Chạy nhanh
 
-Dự án này mô phỏng bài toán **8-Puzzle** bằng Python và Pygame. Người dùng có thể di chuyển các ô số bằng phím mũi tên hoặc chọn thuật toán để chương trình tự tìm đường đi từ trạng thái ban đầu đến trạng thái đích.
+Dự án này mô phỏng bài toán **8-Puzzle** bằng **Python + Pygame**. Người dùng có thể tự chơi bằng phím mũi tên hoặc bấm từng thuật toán để chương trình tự tìm đường đi và animate kết quả trên giao diện.
 
-Bài toán 8-Puzzle gồm một bảng 3x3 có 8 ô số và 1 ô trống. Mỗi bước đi là thao tác trượt một ô số vào vị trí ô trống. Mục tiêu là biến đổi trạng thái hiện tại về trạng thái mẫu với số bước hợp lệ.
+File chạy chính của dự án:
 
-Trong chương trình, trạng thái mặc định là:
+```bash
+python main.py
+```
+
+Cài thư viện cần thiết:
+
+```bash
+python -m pip install pygame
+```
+
+Chạy chương trình:
+
+```bash
+python main.py
+```
+
+Nếu máy đang đứng ở thư mục cha, chuyển vào thư mục chứa `main.py` trước:
+
+```bash
+cd 8_puzzle
+python main.py
+```
+
+Thoát chương trình bằng phím `ESC`.
+
+---
+
+## 0.1. Tổng quan dự án
+
+Đây không chỉ là một game xếp hình 8 số. Dự án được xây dựng như một chương trình trực quan hóa các nhóm thuật toán tìm kiếm trong Trí tuệ nhân tạo.
+
+Chương trình cho phép người học:
+
+- Quan sát bảng chơi 8-Puzzle và bảng trạng thái đích.
+- Chơi thủ công bằng phím mũi tên.
+- Chạy từng thuật toán bằng nút bấm trên giao diện Pygame.
+- Xem animation từng bước đi với tốc độ cố định `300 ms/bước`.
+- Theo dõi log thuật toán, số bước, hướng di chuyển và các giá trị đánh giá như `g(n)`, `h(n)`, `f(n)`.
+- So sánh cách hoạt động của tìm kiếm không thông tin, tìm kiếm có thông tin, tìm kiếm cục bộ, tìm kiếm trong môi trường phức tạp và tìm kiếm đối kháng/ngẫu nhiên.
+
+Trạng thái mặc định trong source code:
 
 ```text
-Trạng thái ban đầu:
+Start:
 0 6 5
 2 1 8
 7 4 3
 
-Trạng thái đích:
+Goal:
 1 2 3
 4 5 6
 7 8 0
@@ -24,502 +64,636 @@ Trong đó `0` biểu diễn ô trống.
 
 ---
 
-## 2. Mục tiêu của chương trình
+## 0.2. Video demo các thuật toán
 
-- Xây dựng giao diện trực quan cho bài toán 8-Puzzle.
-- Cho phép người dùng chơi thủ công bằng phím mũi tên.
-- Cài đặt nhiều nhóm thuật toán tìm kiếm khác nhau.
-- Minh họa quá trình giải bằng animation từng bước.
-- Ghi log số bước, hướng di chuyển và giá trị đánh giá như `g(n)`, `h(n)`, `f(n)`.
-- So sánh hiệu quả giữa các thuật toán trong cùng nhóm và khác nhóm.
-
----
-
-## 3. Công nghệ sử dụng
-
-- Ngôn ngữ: **Python**
-- Thư viện giao diện: **Pygame**
-- Cấu trúc dữ liệu chính: `list`, `set`, `deque`, `heapq`, cây trạng thái thông qua lớp `Node`
-- Heuristic chính: **Manhattan Distance**
-
----
-
-## 4. Cấu trúc thư mục
+Các video demo được đặt trong thư mục `GIF/` ở cùng cấp với `main.py`. Khi đưa lên GitHub, cần giữ nguyên cấu trúc:
 
 ```text
-8_puzzle/
+.
+├── main.py
+├── ui.py
+├── ...
+├── README.md
+└── GIF/
+    ├── BFS.mp4
+    ├── DFS.mp4
+    ├── A_STAR.mp4
+    └── ...
+```
+
+Lưu ý: gói video bạn gửi hiện có **21 file `.mp4`**. Source code có nút **IDS**, nhưng trong gói `GIF.zip` chưa thấy video `IDS.mp4`, nên README đánh dấu IDS là chưa có video.
+
+### Tìm kiếm không thông tin
+
+| Thuật toán | Video demo | File trong repo |
+|---|---|---|
+| BFS | <video src="./GIF/BFS.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/BFS.mp4) | `GIF/BFS.mp4` |
+| DFS | <video src="./GIF/DFS.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/DFS.mp4) | `GIF/DFS.mp4` |
+| UCS | <video src="./GIF/UCS.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/UCS.mp4) | `GIF/UCS.mp4` |
+| IDS | Chưa có video trong gói `GIF.zip` hiện tại | — |
+
+### Tìm kiếm có thông tin
+
+| Thuật toán | Video demo | File trong repo |
+|---|---|---|
+| Greedy | <video src="./GIF/GREEDY.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/GREEDY.mp4) | `GIF/GREEDY.mp4` |
+| A* | <video src="./GIF/A_STAR.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/A_STAR.mp4) | `GIF/A_STAR.mp4` |
+| IDA* | <video src="./GIF/IDA_STAR.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/IDA_STAR.mp4) | `GIF/IDA_STAR.mp4` |
+
+### Tìm kiếm cục bộ
+
+| Thuật toán | Video demo | File trong repo |
+|---|---|---|
+| Simple Hill Climbing | <video src="./GIF/SIMPLE%20HILL.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/SIMPLE%20HILL.mp4) | `GIF/SIMPLE HILL.mp4` |
+| Steepest-Ascent Hill Climbing | <video src="./GIF/STEEPEST%20HILL.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/STEEPEST%20HILL.mp4) | `GIF/STEEPEST HILL.mp4` |
+| Stochastic Hill Climbing | <video src="./GIF/STOCHASTIC%20HILL.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/STOCHASTIC%20HILL.mp4) | `GIF/STOCHASTIC HILL.mp4` |
+| Random-Restart Hill Climbing | <video src="./GIF/RANDOM%20RESTART.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/RANDOM%20RESTART.mp4) | `GIF/RANDOM RESTART.mp4` |
+| Local Beam Search | <video src="./GIF/LOCAL%20BEAM.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/LOCAL%20BEAM.mp4) | `GIF/LOCAL BEAM.mp4` |
+| Simulated Annealing | <video src="./GIF/SIMULATED%20ANNEALING.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/SIMULATED%20ANNEALING.mp4) | `GIF/SIMULATED ANNEALING.mp4` |
+
+### Tìm kiếm trong môi trường phức tạp
+
+| Thuật toán | Video demo | File trong repo |
+|---|---|---|
+| Không trạng thái đầu / Search Without Start State | <video src="./GIF/NO%20OBSERVATION.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/NO%20OBSERVATION.mp4) | `GIF/NO OBSERVATION.mp4` |
+| Quan sát một phần / Partially Observable Search | <video src="./GIF/PARTIALLY%20OBSERVATION.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/PARTIALLY%20OBSERVATION.mp4) | `GIF/PARTIALLY OBSERVATION.mp4` |
+| AND-OR Search | <video src="./GIF/AND%20OR.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/AND%20OR.mp4) | `GIF/AND OR.mp4` |
+| Backtracking Search | <video src="./GIF/BACKTRACKING.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/BACKTRACKING.mp4) | `GIF/BACKTRACKING.mp4` |
+| AC-3 | <video src="./GIF/AC-3.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/AC-3.mp4) | `GIF/AC-3.mp4` |
+| Min-Conflicts | <video src="./GIF/MIN%20CONFLICT.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/MIN%20CONFLICT.mp4) | `GIF/MIN CONFLICT.mp4` |
+
+### Tìm kiếm đối kháng / ngẫu nhiên
+
+| Thuật toán | Video demo | File trong repo |
+|---|---|---|
+| Minimax | <video src="./GIF/MINIMAX.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/MINIMAX.mp4) | `GIF/MINIMAX.mp4` |
+| Alpha-Beta Pruning | <video src="./GIF/ALPHA%20BETA.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/ALPHA%20BETA.mp4) | `GIF/ALPHA BETA.mp4` |
+| Expectimax | <video src="./GIF/EXPECTIMAX.mp4" controls width="260"></video><br>[▶ Mở video](./GIF/EXPECTIMAX.mp4) | `GIF/EXPECTIMAX.mp4` |
+
+
+---
+
+## 1. Thông tin dự án
+
+| Mục | Nội dung |
+|---|---|
+| Tên dự án | 8-Puzzle AI - Search Algorithms Visualization |
+| Chủ đề | Trực quan hóa và so sánh thuật toán tìm kiếm trên bài toán 8-Puzzle |
+| Lĩnh vực | Trí tuệ nhân tạo, tìm kiếm trong không gian trạng thái, heuristic search, local search, adversarial search |
+| Ngôn ngữ | Python |
+| Giao diện | Pygame |
+| File chạy chính | `main.py` |
+| Trạng thái mặc định | `[[0, 6, 5], [2, 1, 8], [7, 4, 3]]` |
+| Trạng thái đích | `[[1, 2, 3], [4, 5, 6], [7, 8, 0]]` |
+
+---
+
+## 2. Mục tiêu của chương trình
+
+Dự án tập trung vào các mục tiêu chính:
+
+1. **Mô phỏng bài toán 8-Puzzle** bằng giao diện trực quan.
+2. **Cài đặt nhiều nhóm thuật toán tìm kiếm AI** trên cùng một bài toán.
+3. **Minh họa quá trình giải** bằng animation từng bước.
+4. **Ghi log quá trình chạy** để thấy thuật toán đã tìm được bao nhiêu bước, dừng ở đâu, dùng `g(n)`, `h(n)`, `f(n)` như thế nào.
+5. **Phân biệt đúng bản chất từng nhóm thuật toán**, đặc biệt là nhóm đối kháng/ngẫu nhiên không giả vờ 8-Puzzle có đối thủ mà chuyển sang demo Caro 3x3.
+
+---
+
+## 3. Bài toán 8-Puzzle
+
+8-Puzzle là bài toán gồm bảng 3x3 có 8 ô số và 1 ô trống. Mỗi bước đi là thao tác trượt một ô số vào vị trí ô trống. Mục tiêu là biến đổi trạng thái ban đầu về trạng thái đích bằng chuỗi hành động hợp lệ.
+
+Trong chương trình:
+
+- Trạng thái bảng được quản lý trong `grid.py` bằng class `Puzzle`.
+- `Puzzle.state` là ma trận 2 chiều.
+- `Puzzle.goal` là ma trận đích.
+- `Puzzle.get_neighbors(state)` sinh các trạng thái kế tiếp hợp lệ.
+- `Puzzle.move(direction)` dùng cho thao tác người chơi và animation.
+
+### 3.1. Biểu diễn trạng thái
+
+Trong phần giao diện và lớp `Puzzle`, trạng thái được biểu diễn dạng ma trận:
+
+```python
+[[0, 6, 5],
+ [2, 1, 8],
+ [7, 4, 3]]
+```
+
+Trong lõi thuật toán `algorithm_core.py`, trạng thái được chuyển thành tuple phẳng để dễ đưa vào `set`, `dict`, `deque` và `heapq`:
+
+```python
+(0, 6, 5, 2, 1, 8, 7, 4, 3)
+```
+
+Cách biểu diễn phẳng giúp kiểm tra trạng thái đã thăm, so sánh chi phí tốt nhất và tránh lặp vô hạn hiệu quả hơn.
+
+### 3.2. Tập hành động
+
+Source code có một điểm quan trọng: thuật toán nội bộ di chuyển **ô trống**, còn UI lại hiển thị hướng di chuyển của **ô số**.
+
+Trong `algorithm_core.py`:
+
+```python
+ACTION_ORDER = "LRUD"
+BLANK_MOVES = {
+    "L": (0, -1),
+    "R": (0, 1),
+    "U": (-1, 0),
+    "D": (1, 0),
+}
+UI_ACTION_FROM_BLANK = {
+    "L": "right",
+    "R": "left",
+    "U": "down",
+    "D": "up",
+}
+```
+
+Nghĩa là nếu thuật toán nói ô trống đi sang trái `L`, thì trên giao diện người xem sẽ thấy ô số bên trái trượt sang phải. Vì vậy code có bước chuyển đổi từ hành động của ô trống sang hành động hiển thị trên UI.
+
+### 3.3. Điều kiện solvable
+
+Trong `utils.py`, chương trình kiểm tra tính giải được bằng số inversion:
+
+```python
+def is_solvable(state, goal=None):
+    return inversion_count(state) % 2 == inversion_count(goal) % 2
+```
+
+Với bảng 3x3, một trạng thái có lời giải nếu parity của số inversion tương thích với trạng thái đích. Các thuật toán chuẩn như BFS, DFS, UCS, Greedy, A* và IDA* đều kiểm tra điều kiện này trước khi tìm kiếm.
+
+---
+
+## 4. PEAS cho 8-Puzzle Agent
+
+| Thành phần | Mô tả trong dự án |
+|---|---|
+| Performance | Đưa bảng về Goal, giảm số bước, giảm số node mở rộng/sinh ra, hoàn thành trong giới hạn node và thời gian. |
+| Environment | Bảng 3x3, deterministic, fully observable, một ô trống `0`, cost mỗi bước bằng 1. |
+| Actuators | Di chuyển ô trống hoặc ô số theo bốn hướng hợp lệ: lên, xuống, trái, phải. |
+| Sensors | Quan sát toàn bộ ma trận 3x3, vị trí ô trống, trạng thái hiện tại, trạng thái đích và các hành động hợp lệ. |
+
+Bài toán chính là **single-agent deterministic search problem**. Vì vậy các thuật toán Minimax, Alpha-Beta và Expectimax không được áp trực tiếp như solver 8-Puzzle, mà source code chuyển sang demo **Caro 3x3** để thể hiện đúng bản chất MAX, MIN và Chance node.
+
+---
+
+## 5. Cấu trúc source code
+
+Cấu trúc thực tế sau khi đọc source code:
+
+```text
+.
 ├── main.py
 ├── ui.py
 ├── grid.py
 ├── utils.py
+├── algorithm_core.py
 ├── algorithms_uninformed.py
 ├── algorithms_informed.py
 ├── algorithms_local.py
 ├── algorithms_complex.py
 ├── adversarial.py
-└── README.md
+├── README.md
+└── GIF/
+    ├── BFS.mp4
+    ├── DFS.mp4
+    ├── UCS.mp4
+    ├── GREEDY.mp4
+    ├── A_STAR.mp4
+    └── ...
 ```
 
-Ý nghĩa các file chính:
+File `tempCodeRunnerFile.py` nếu còn trong máy là file tạm do VS Code sinh ra, không cần thiết cho bản nộp.
 
-| File | Chức năng |
+### 5.1. `main.py`
+
+Đây là entry point của chương trình:
+
+```python
+from ui import PuzzleApp
+
+if __name__ == "__main__":
+    app = PuzzleApp()
+    app.run()
+```
+
+File này chỉ tạo đối tượng `PuzzleApp` và chạy vòng lặp giao diện.
+
+### 5.2. `ui.py`
+
+File này xây dựng toàn bộ giao diện Pygame:
+
+- Tạo cửa sổ full-screen bằng `pygame.FULLSCREEN | pygame.SCALED`.
+- Kích thước thiết kế: `1120 x 920`.
+- Vẽ bảng chơi, bảng đích, khu vực log, bảng kết quả và các nhóm nút thuật toán.
+- Xử lý phím mũi tên để người dùng chơi thủ công.
+- Xử lý các nút `Xáo Trộn`, `Chơi Lại`, `Dừng Lại/Tiếp Tục`.
+- Gọi thuật toán tương ứng khi người dùng bấm nút.
+- Animate lời giải từng bước với `SOLVE_DELAY_MS = 300`.
+- Riêng nhóm adversarial/stochastic sẽ chuyển bảng chơi thành **bảng Caro 3x3** để demo Minimax, Alpha-Beta và Expectimax.
+
+### 5.3. `grid.py`
+
+File này chứa class `Puzzle`, chịu trách nhiệm:
+
+- Lưu trạng thái hiện tại.
+- Tìm vị trí ô trống.
+- Kiểm tra trạng thái đích.
+- Sinh trạng thái lân cận.
+- Di chuyển ô số theo hướng người chơi hoặc hướng animation.
+
+### 5.4. `utils.py`
+
+File này chứa các thành phần dùng chung:
+
+- `SearchResult`: danh sách bước đi kèm thông tin log.
+- `Node`: node trong cây tìm kiếm, gồm `state`, `parent`, `action`, `depth`, `g`, `h`, `f`.
+- `flatten_state()`: chuyển ma trận 2D sang tuple phẳng.
+- `extract_path()`: truy vết lời giải từ node đích về start.
+- `inversion_count()` và `is_solvable()`.
+- `manhattan_distance()`.
+- `misplaced_tiles()`.
+- `g_cost()`, `h_cost()`, `f_cost()`.
+
+### 5.5. `algorithm_core.py`
+
+File này là lớp lõi chung cho các thuật toán dùng tuple phẳng:
+
+- Quy định thứ tự hành động `LRUD`.
+- Sinh neighbor cho trạng thái phẳng.
+- Kiểm tra solvable.
+- Chuyển hành động của ô trống sang hành động UI.
+- Tạo `SearchResult` từ node kết quả.
+- Tạo summary gồm số node mở rộng, số state sinh ra, frontier lớn nhất và số state reached.
+
+### 5.6. Các file thuật toán
+
+| File | Vai trò |
 |---|---|
-| `main.py` | Điểm chạy chính của chương trình |
-| `ui.py` | Xây dựng giao diện Pygame, nút bấm, animation và log |
-| `grid.py` | Quản lý trạng thái bảng, kiểm tra goal, sinh trạng thái kế tiếp |
-| `utils.py` | Lớp `Node`, hàm truy vết đường đi, heuristic và hàm chi phí |
-| `algorithms_uninformed.py` | Các thuật toán tìm kiếm không thông tin |
-| `algorithms_informed.py` | Các thuật toán tìm kiếm có thông tin |
-| `algorithms_local.py` | Các thuật toán tìm kiếm cục bộ |
-| `algorithms_complex.py` | Các thuật toán trong môi trường phức tạp |
-| `adversarial.py` | Các thuật toán đối kháng và ngẫu nhiên |
+| `algorithms_uninformed.py` | BFS, DFS, UCS, IDS |
+| `algorithms_informed.py` | Greedy, A*, IDA* |
+| `algorithms_local.py` | Simple Hill, Steepest Hill, Stochastic Hill, Random Restart, Local Beam, Simulated Annealing |
+| `algorithms_complex.py` | Không trạng thái đầu, Quan sát một phần, AND-OR, Backtracking, AC-3, Min-Conflicts |
+| `adversarial.py` | Minimax, Alpha-Beta, Expectimax trên Caro 3x3 |
 
 ---
 
-## 5. Cách cài đặt và chạy chương trình
+## 6. Các nhóm thuật toán trong giao diện
 
-### Bước 1: Cài Python
+Source code hiện cài đặt **22 thuật toán/nút demo** theo 5 nhóm chính.
 
-Cài Python phiên bản 3.10 trở lên. Có thể kiểm tra bằng lệnh:
-
-```bash
-python --version
-```
-
-### Bước 2: Cài Pygame
-
-```bash
-pip install pygame
-```
-
-### Bước 3: Chạy chương trình
-
-Nếu đang đứng trong thư mục chứa file `main.py`, chạy:
-
-```bash
-python main.py
-```
-
-Nếu đang đứng ở thư mục gốc repository, chạy:
-
-```bash
-cd 8_puzzle
-python main.py
-```
-
-### Phím điều khiển
-
-| Thao tác | Chức năng |
+| Nhóm | Thuật toán |
 |---|---|
-| Phím mũi tên | Di chuyển ô số theo hướng tương ứng |
-| `Xáo Trộn` | Tạo trạng thái mới bằng cách xáo trộn bảng |
-| `Chơi Lại` | Đưa bảng về trạng thái ban đầu |
-| `Dừng Lại` / `Tiếp Tục` | Tạm dừng hoặc tiếp tục animation |
-| `ESC` | Thoát chương trình |
+| Tìm kiếm không thông tin | BFS, DFS, UCS, IDS |
+| Tìm kiếm có thông tin | Greedy, A*, IDA* |
+| Tìm kiếm cục bộ | Simple Hill, Steepest Hill, Stochastic Hill, Random Restart, Local Beam, Simulated Annealing |
+| Tìm kiếm trong môi trường phức tạp | Không trạng thái đầu, Quan sát một phần, AND-OR Search, Backtracking, AC-3, Min-Conflicts |
+| Tìm kiếm đối kháng / ngẫu nhiên | Minimax, Alpha-Beta, Expectimax |
 
 ---
 
-## 6. Các nhóm thuật toán đã cài đặt
+## 7. Nhóm tìm kiếm không thông tin
 
-Chương trình chia thuật toán thành 5 nhóm chính:
-
-1. **Tìm kiếm không thông tin**
-2. **Tìm kiếm có thông tin**
-3. **Tìm kiếm cục bộ**
-4. **Tìm kiếm trong môi trường phức tạp**
-5. **Tìm kiếm đối kháng / ngẫu nhiên**
-
----
-
-## 7. Nhóm thuật toán tìm kiếm không thông tin
-
-Nhóm này không sử dụng heuristic để ước lượng khoảng cách đến đích. Thuật toán chỉ dựa vào cấu trúc không gian trạng thái và cách mở rộng nút.
+Nhóm này không dùng heuristic để đo khoảng cách đến đích. Thuật toán chỉ dựa vào cấu trúc không gian trạng thái, frontier, reached và chi phí đường đi.
 
 ### 7.1. BFS - Breadth-First Search
 
-BFS mở rộng các trạng thái theo từng mức độ sâu. Trạng thái nào sinh ra trước ở mức nông hơn sẽ được xét trước.
+BFS dùng `deque` làm hàng đợi FIFO. Trạng thái nào được sinh ra trước ở độ sâu nông hơn sẽ được xét trước.
 
-Đặc điểm:
+Đặc điểm trong source:
 
-- Tìm được lời giải tối ưu theo số bước nếu mỗi bước có chi phí bằng nhau.
-- Dễ hiểu, dễ cài đặt.
-- Tốn bộ nhớ vì phải lưu nhiều trạng thái trong hàng đợi.
+- Frontier: `deque`.
+- Reached: `set`.
+- Mỗi bước cost bằng 1.
+- Có kiểm tra `max_nodes` và `max_time_ms`.
+- Trả về lời giải tối ưu theo số bước nếu trạng thái nằm trong giới hạn.
 
 ### 7.2. DFS - Depth-First Search
 
-DFS đi sâu theo một nhánh trước, khi không đi tiếp được thì quay lui.
+DFS dùng stack LIFO, đi sâu theo một nhánh trước rồi mới quay lui.
 
-Đặc điểm:
+Đặc điểm trong source:
 
-- Bộ nhớ thường thấp hơn BFS.
-- Có thể tìm được lời giải rất dài.
+- Frontier: list dùng `.pop()`.
+- Có `max_depth=50` để tránh đi quá sâu.
+- Có `reached` dạng dict lưu độ sâu tốt nhất từng trạng thái.
 - Không đảm bảo lời giải tối ưu.
-- Dễ đi sâu vào nhánh kém hiệu quả.
 
 ### 7.3. UCS - Uniform Cost Search
 
-UCS chọn trạng thái có chi phí đường đi thấp nhất để mở rộng. Trong chương trình này, mỗi bước trượt có chi phí bằng `1`, nên `g(n)` chính là số bước từ trạng thái bắt đầu đến trạng thái hiện tại.
+UCS dùng priority queue theo `g(n)`. Vì mỗi bước trượt có cost bằng 1, `g(n)` chính là số bước từ start tới node hiện tại.
 
-Đặc điểm:
+Đặc điểm trong source:
 
-- Có cơ chế ưu tiên trạng thái có chi phí đường đi thấp.
-- Phù hợp khi các bước đi có chi phí khác nhau.
-- Với chi phí mỗi bước bằng nhau, UCS cho lời giải ngắn tương tự BFS.
+- Frontier: `heapq`.
+- Priority: `g(n)`.
+- `best_g` lưu chi phí tốt nhất tới từng state.
+- Tối ưu với cost không âm.
 
 ### 7.4. IDS - Iterative Deepening Search
 
-IDS kết hợp ưu điểm của BFS và DFS. Thuật toán chạy Depth-Limited Search nhiều lần với giới hạn độ sâu tăng dần.
+IDS chạy Depth-Limited Search nhiều lần với giới hạn độ sâu tăng dần.
 
-Đặc điểm:
+Đặc điểm trong source:
 
-- Tìm được lời giải tối ưu theo độ sâu nếu chi phí bước đi bằng nhau.
-- Ít tốn bộ nhớ hơn BFS.
-- Phải lặp lại việc duyệt các mức nông nhiều lần.
-
-### 7.5. So sánh trong nhóm tìm kiếm không thông tin
-
-| Thuật toán | Tối ưu lời giải | Đầy đủ | Bộ nhớ | Nhận xét |
-|---|---:|---:|---:|---|
-| BFS | Có | Có | Cao | Phù hợp bài toán nhỏ, lời giải ngắn |
-| DFS | Không | Có nếu có kiểm soát trạng thái | Thấp hơn BFS | Có thể cho lời giải rất dài |
-| UCS | Có với chi phí không âm | Có | Trung bình đến cao | Tối ưu theo chi phí đường đi |
-| IDS | Có | Có | Thấp | Cân bằng tốt giữa BFS và DFS |
-
-Đánh giá chung: Trong nhóm này, **BFS** và **UCS** đáng tin cậy hơn khi cần lời giải ngắn nhất với chi phí bước bằng nhau. **DFS** phù hợp để minh họa cơ chế duyệt sâu nhưng không nên dùng khi cần lời giải tối ưu. **IDS** đúng về ý tưởng nhưng có thể chạm giới hạn node trên trạng thái khó nếu giữ cấu hình giống bản tham khảo.
+- Gọi `_depth_limited_search()` nhiều lần.
+- `max_depth=30` mặc định.
+- Có thống kê expanded, generated, max frontier và reached.
+- Với trạng thái mặc định của dự án, lời giải tối ưu dài 22 bước nhưng IDS có thể không tìm thấy trong giới hạn node/thời gian mặc định tùy cấu hình chạy.
 
 ---
 
-## 8. Nhóm thuật toán tìm kiếm có thông tin
+## 8. Nhóm tìm kiếm có thông tin
 
-Nhóm này sử dụng heuristic để định hướng quá trình tìm kiếm. Heuristic chính trong chương trình là **Manhattan Distance**, tính tổng khoảng cách từ vị trí hiện tại của mỗi ô đến vị trí đích.
+Nhóm này sử dụng heuristic để định hướng tìm kiếm. Heuristic chính trong code là **Manhattan Distance**.
 
 ### 8.1. Greedy Best-First Search
 
-Greedy chọn trạng thái có `h(n)` nhỏ nhất, tức là trạng thái được ước lượng gần đích nhất.
+Greedy chọn node có `h(n)` nhỏ nhất.
 
-Đặc điểm:
+```text
+priority(n) = h(n)
+```
 
-- Tốc độ thường nhanh.
-- Dễ bị mắc kẹt hoặc đi theo hướng tưởng tốt nhưng không tối ưu.
-- Không đảm bảo lời giải ngắn nhất.
+Ưu điểm là chạy nhanh, nhưng vì bỏ qua `g(n)`, thuật toán không đảm bảo đường đi ngắn nhất.
 
 ### 8.2. A* Search
 
-A* sử dụng hàm đánh giá:
+A* chọn node có `f(n)` nhỏ nhất:
 
 ```text
 f(n) = g(n) + h(n)
 ```
 
-Trong đó:
+Trong source:
 
-- `g(n)` là chi phí đã đi.
-- `h(n)` là chi phí ước lượng còn lại.
-
-Trong chương trình này, `h(n)` là Manhattan Distance. Hàm `f_cost()` dùng đúng công thức `node.g + h(n)`, trong đó `node.g` là số bước đã đi.
-
-Đặc điểm:
-
-- Nếu `h(n)` chấp nhận được, A* có thể tìm lời giải tối ưu theo số bước.
-- Thường hiệu quả hơn BFS vì có hướng tìm kiếm.
-- Có thể tốn bộ nhớ khi không gian trạng thái lớn.
+- `g(n)` là số bước đã đi.
+- `h(n)` là Manhattan Distance.
+- `best_g` đảm bảo chỉ mở lại state nếu tìm được đường tốt hơn.
+- A* là thuật toán đáng tin cậy nhất trong nhóm tìm kiếm có thông tin với bài 8-Puzzle chuẩn.
 
 ### 8.3. IDA* - Iterative Deepening A*
 
-IDA* kết hợp tư tưởng của A* và IDS. Thuật toán dùng ngưỡng `f(n)` và tăng dần ngưỡng qua từng vòng lặp.
+IDA* dùng DFS với ngưỡng `f(n)`. Nếu `f(n)` vượt threshold thì cắt nhánh. Threshold tăng dần theo giá trị vượt nhỏ nhất.
 
-Đặc điểm:
+Đặc điểm trong source:
 
-- Tiết kiệm bộ nhớ hơn A*.
-- Vẫn tận dụng heuristic để định hướng tìm kiếm.
-- Có thể phải lặp lại nhiều trạng thái qua các vòng ngưỡng.
-
-### 8.4. So sánh trong nhóm tìm kiếm có thông tin
-
-| Thuật toán | Dựa vào | Tối ưu | Bộ nhớ | Nhận xét |
-|---|---|---:|---:|---|
-| Greedy | `h(n)` | Không | Trung bình | Nhanh nhưng dễ đi sai hướng |
-| A* | `g(n) + h(n)` | Có nếu cài đặt chuẩn | Cao | Cân bằng giữa chi phí đã đi và ước lượng còn lại |
-| IDA* | Ngưỡng `f(n)` | Có nếu heuristic phù hợp | Thấp hơn A* | Tốt khi muốn giảm bộ nhớ |
-
-Đánh giá chung: **Greedy** phù hợp khi ưu tiên tốc độ và chấp nhận lời giải không tối ưu. **A*** thường là lựa chọn mạnh nhất nếu cần lời giải tốt. **IDA*** phù hợp khi muốn lợi thế của heuristic nhưng giảm áp lực bộ nhớ.
+- Threshold ban đầu là `h(start)`.
+- Mỗi vòng gọi `_ida_star_search()`.
+- `max_iterations=100`.
+- Tiết kiệm bộ nhớ hơn A* vì không giữ toàn bộ priority queue lớn.
 
 ---
 
-## 9. Nhóm thuật toán tìm kiếm cục bộ
+## 9. Nhóm tìm kiếm cục bộ
 
-Tìm kiếm cục bộ không duyệt toàn bộ cây trạng thái. Thuật toán chỉ quan tâm đến trạng thái hiện tại và các trạng thái lân cận. Nhóm này phù hợp để minh họa các khái niệm như cực trị địa phương, plateau, random restart và xác suất chấp nhận trạng thái xấu hơn.
+Local search không duyệt toàn bộ cây trạng thái. Thuật toán chỉ quan tâm trạng thái hiện tại và các trạng thái lân cận. Vì vậy nhóm này nhanh nhưng không đảm bảo luôn tìm được goal.
 
-### 9.1. Simple Hill Climbing
+| Thuật toán | Cách hoạt động trong source | Điểm cần nhớ |
+|---|---|---|
+| Simple Hill | Chọn neighbor đầu tiên có `h` nhỏ hơn hiện tại | Dễ kẹt local optimum |
+| Steepest Hill | Xét toàn bộ neighbor rồi chọn neighbor có `h` thấp nhất | Cẩn thận hơn Simple Hill nhưng vẫn dễ kẹt |
+| Stochastic Hill | Chọn ngẫu nhiên trong các neighbor cải thiện | Kết quả thay đổi theo random |
+| Random Restart | Tạo nhiều trạng thái bằng random walk rồi hill climbing | Giảm nguy cơ kẹt so với hill climbing đơn |
+| Local Beam | Giữ `k=4` trạng thái tốt nhất ở mỗi vòng | Khám phá nhiều hướng song song |
+| Simulated Annealing | Có thể nhận bước xấu với xác suất `exp(-delta/T)` | Phụ thuộc nhiệt độ, cooling rate và random |
 
-Simple Hill Climbing chọn trạng thái lân cận đầu tiên có heuristic tốt hơn hiện tại.
-
-Đặc điểm:
-
-- Nhanh, đơn giản.
-- Dễ dừng ở cực trị địa phương.
-- Không đảm bảo tìm được lời giải.
-
-### 9.2. Steepest-Ascent Hill Climbing
-
-Thuật toán xét tất cả trạng thái lân cận rồi chọn trạng thái tốt nhất.
-
-Đặc điểm:
-
-- Cẩn thận hơn Simple Hill Climbing.
-- Mỗi bước tốn nhiều phép xét hơn.
-- Vẫn có thể mắc kẹt ở cực trị địa phương.
-
-### 9.3. Stochastic Hill Climbing
-
-Thuật toán chọn ngẫu nhiên một trạng thái tốt hơn trong các trạng thái lân cận.
-
-Đặc điểm:
-
-- Có yếu tố ngẫu nhiên nên có thể tránh một số đường đi cố định kém hiệu quả.
-- Kết quả mỗi lần chạy có thể khác nhau.
-- Không đảm bảo tối ưu.
-
-### 9.4. Random Restart Hill Climbing
-
-Thuật toán chạy Hill Climbing nhiều lần từ các trạng thái khởi đầu khác nhau.
-
-Đặc điểm:
-
-- Giảm nguy cơ mắc kẹt tại cực trị địa phương.
-- Tốn thời gian hơn Hill Climbing thường.
-- Vẫn không đảm bảo chắc chắn tìm được lời giải.
-
-### 9.5. Local Beam Search
-
-Local Beam Search giữ đồng thời `k` trạng thái tốt nhất ở mỗi vòng lặp.
-
-Đặc điểm:
-
-- Tìm kiếm rộng hơn Hill Climbing.
-- Có khả năng thoát khỏi một số nhánh kém.
-- Tốn bộ nhớ hơn Hill Climbing đơn.
-
-### 9.6. Simulated Annealing
-
-Simulated Annealing cho phép chọn cả trạng thái xấu hơn với một xác suất nhất định, đặc biệt ở giai đoạn nhiệt độ cao.
-
-Đặc điểm:
-
-- Có khả năng thoát khỏi cực trị địa phương.
-- Kết quả phụ thuộc vào nhiệt độ ban đầu, tốc độ làm nguội và yếu tố ngẫu nhiên.
-- Không đảm bảo lời giải tối ưu.
-
-### 9.7. So sánh trong nhóm tìm kiếm cục bộ
-
-| Thuật toán | Có ngẫu nhiên | Khả năng thoát cực trị địa phương | Tốc độ | Độ ổn định |
-|---|---:|---:|---:|---:|
-| Simple Hill | Không | Thấp | Rất nhanh | Trung bình |
-| Steepest Hill | Không | Thấp | Nhanh | Cao hơn Simple |
-| Stochastic Hill | Có | Trung bình | Nhanh | Thấp hơn do ngẫu nhiên |
-| Random Restart | Có | Cao hơn Hill thường | Trung bình | Khá tốt |
-| Local Beam | Có khởi tạo ngẫu nhiên | Trung bình đến cao | Trung bình | Khá tốt |
-| Simulated Annealing | Có | Cao nếu tham số phù hợp | Trung bình | Phụ thuộc tham số |
-
-Đánh giá chung: Nhóm tìm kiếm cục bộ chạy nhanh và trực quan, nhưng không phù hợp nếu yêu cầu chắc chắn tìm được lời giải tối ưu. Trong nhóm này, **Local Beam Search**, **Random Restart** và **Simulated Annealing** có khả năng tìm lời giải tốt hơn các biến thể Hill Climbing đơn giản vì có cơ chế mở rộng hoặc thoát khỏi cực trị địa phương.
+Trong source, `MAX_LOCAL_STEPS = 500`. Riêng Simulated Annealing có `max_steps=10000`, `initial_temperature=100.0`, `cooling_rate=0.995`, `min_temperature=0.01`.
 
 ---
 
-## 10. Nhóm thuật toán trong môi trường phức tạp
+## 10. Nhóm tìm kiếm trong môi trường phức tạp
 
-Nhóm này mô phỏng các tình huống khó hơn so với bài toán 8-Puzzle chuẩn, ví dụ không biết trạng thái đầu, chỉ quan sát được một phần trạng thái, hoặc dùng mô hình cây kế hoạch.
+Nhóm này mở rộng cách nhìn về bài toán tìm kiếm. Một số thuật toán vẫn sinh nước trượt hợp lệ trên 8-Puzzle, nhưng mục tiêu chính là minh họa mô hình học thuật phức tạp hơn.
 
-### 10.1. Search Without Start State
+### 10.1. Không trạng thái đầu / Search Without Start State
 
-Thuật toán tìm ngược từ trạng thái đích về trạng thái hiện tại, sau đó đảo ngược chuỗi hành động để tạo lời giải từ trạng thái hiện tại đến đích.
+Thuật toán này không mở frontier từ start như thông thường. Nó tìm từ `Goal` về trạng thái hiện tại, sau đó đảo ngược chuỗi hành động để tạo lời giải từ start đến goal.
 
-Đặc điểm:
+Trong source, hàm tương ứng là:
 
-- Minh họa cách tìm kiếm khi không mở rộng trực tiếp từ trạng thái đầu.
-- Vẫn tận dụng heuristic Manhattan để định hướng.
-- Phù hợp để so sánh với hướng tìm kiếm thuận.
+```python
+search_without_start_state(puzzle)
+```
 
-### 10.2. Partially Observable Search
+### 10.2. Quan sát một phần / Partially Observable Search
 
-Thuật toán chỉ quan sát một phần trạng thái, cụ thể là các ô `1, 2, 3, 4`. Heuristic chỉ tính trên các ô nhìn thấy.
+Thuật toán chỉ quan sát các ô `1, 2, 3, 4`. Heuristic chỉ tính khoảng cách của các ô nhìn thấy.
 
-Đặc điểm:
+```python
+VISIBLE_TILES = {1, 2, 3, 4}
+```
 
-- Mô phỏng môi trường thiếu thông tin.
-- Có thể tìm được lời giải nhưng đường đi thường dài hơn.
-- Chất lượng phụ thuộc vào phần trạng thái quan sát được.
+Điều này minh họa trường hợp agent không có đầy đủ thông tin về môi trường.
 
 ### 10.3. AND-OR Search
 
-AND-OR Search thường dùng cho môi trường có tính bất định, trong đó:
+AND-OR Search dùng cho môi trường bất định:
 
-- Nút OR biểu diễn việc chọn hành động.
-- Nút AND biểu diễn việc phải xử lý tất cả kết quả có thể xảy ra.
+- OR node: agent chọn hành động.
+- AND node: mọi kết quả có thể của hành động phải được xử lý.
 
-Trong 8-Puzzle, môi trường là xác định, nên mỗi hành động chỉ sinh ra một kết quả. Vì vậy AND-OR Search trong chương trình chủ yếu dùng để minh họa mô hình cây kế hoạch.
+Với 8-Puzzle chuẩn, môi trường là xác định nên mỗi hành động chỉ có một kết quả. Vì vậy trong dự án, AND-OR Search chủ yếu dùng để minh họa mô hình cây kế hoạch.
 
 ### 10.4. Backtracking Search
 
-Backtracking duyệt theo chiều sâu, thử một nhánh, nếu không phù hợp thì quay lui. Chương trình kết hợp thêm heuristic Manhattan để cắt bớt các nhánh kém.
+Backtracking Search dùng DFS có quay lui và cắt nhánh bằng Manhattan Distance.
 
-Đặc điểm:
+Trong source, thuật toán cắt nhánh nếu:
 
-- Thể hiện rõ cơ chế thử sai và quay lui.
-- Có thể cắt nhánh bằng điều kiện heuristic.
-- Không phải lúc nào cũng cho lời giải tối ưu.
+```text
+node.depth + h_cost(node.state, goal) > limit
+```
 
 ### 10.5. AC-3
 
-AC-3 mô hình hóa mỗi quân số như một biến CSP, miền của biến là các vị trí
-trên bảng. Thuật toán lan truyền quan hệ vị trí giữa các ô kề nhau trong trạng
-thái đích, loại những giá trị không còn hỗ trợ. Miền sau AC-3 được dùng làm
-heuristic để tìm chuỗi nước trượt hợp lệ.
+AC-3 được thích nghi theo hướng CSP:
+
+- Mỗi quân số là một biến.
+- Miền là các vị trí trên bảng.
+- Ràng buộc dựa trên quan hệ kề nhau trong trạng thái đích.
+- Sau khi lan truyền ràng buộc, chương trình tiếp tục tìm kiếm bằng heuristic miền.
 
 ### 10.6. Min-Conflicts
 
-Min-Conflicts xem một quân sai vị trí là một biến đang xung đột. Vì 8-Puzzle
-không cho phép gán tùy ý, chương trình chỉ xét các phép sửa tương ứng với việc
-đổi một quân kề ô trống. Các trạng thái có ít vi phạm vị trí và khoảng cách
-Manhattan nhỏ hơn được ưu tiên; lựa chọn ngẫu nhiên dùng để phá hòa.
-
-### 10.7. So sánh trong nhóm môi trường phức tạp
-
-| Thuật toán | Mô hình chính | Ưu điểm | Hạn chế |
-|---|---|---|---|
-| Search Without Start State | Tìm ngược từ goal | Cho góc nhìn khác về không gian trạng thái | Cần biết rõ trạng thái đích và trạng thái cần khớp |
-| Partially Observable | Quan sát một phần | Mô phỏng thiếu thông tin | Heuristic yếu hơn nên đường đi có thể dài hơn |
-| AND-OR Search | Cây kế hoạch | Phù hợp lý thuyết môi trường bất định | Với 8-Puzzle xác định, vai trò AND chưa thể hiện mạnh |
-| Backtracking | Thử và quay lui | Dễ hiểu, có thể cắt nhánh | Có thể tốn thời gian nếu không cắt nhánh tốt |
-| AC-3 | Lan truyền ràng buộc CSP | Loại giá trị miền không nhất quán trước khi tìm | Cần kết hợp tìm kiếm để tạo chuỗi nước đi |
-| Min-Conflicts | Sửa biến đang vi phạm | Trực quan, ưu tiên trạng thái ít xung đột | Bản thích nghi phải tuân theo nước trượt hợp lệ |
-
-Đánh giá chung: Nhóm này không chỉ nhằm tìm lời giải nhanh nhất mà còn nhằm minh họa các biến thể môi trường tìm kiếm. **Search Without Start State** và **AND-OR Search** thường cho kết quả ổn định hơn trong 8-Puzzle xác định. **Partially Observable Search** cho thấy khi thiếu thông tin, lời giải có thể dài hơn. **Backtracking** phù hợp để minh họa cơ chế quay lui và cắt nhánh, còn **AC-3** và **Min-Conflicts** minh họa hai kỹ thuật giải bài toán thỏa mãn ràng buộc.
+Min-Conflicts xem các quân sai vị trí là xung đột. Vì 8-Puzzle không cho phép gán tùy ý như CSP cổ điển, source chỉ xét những phép sửa tương ứng với một nước trượt hợp lệ với ô trống.
 
 ---
 
-## 11. Nhóm thuật toán đối kháng / ngẫu nhiên
+## 11. Nhóm tìm kiếm đối kháng / ngẫu nhiên
 
-Nhóm này bám theo bản tham khảo trong file zip: vì 8-Puzzle là bài toán một người chơi và không có đối thủ thật, Minimax, Alpha-Beta và Expectimax được demo trên một bàn Caro 3x3 nhỏ. UI vẫn giữ giao diện 8-Puzzle cũ; khi bấm các thuật toán này, bảng chơi chuyển sang bàn Caro và thuật toán tự chơi tiếp cho tới khi có kết quả cuối cùng như X thắng, O thắng hoặc hòa.
+8-Puzzle chuẩn là bài toán một người chơi, không có đối thủ. Vì vậy source code không áp Minimax, Alpha-Beta và Expectimax trực tiếp lên 8-Puzzle. Thay vào đó, file `adversarial.py` demo các thuật toán này trên **Caro 3x3**.
 
-| Thuật toán | Mô hình chính | Nhận xét |
-|---|---|---|
-| Minimax | MAX/MIN luân phiên trên Caro | X và O tự chơi bằng giá trị minimax tới trạng thái kết thúc |
-| Alpha-Beta | Minimax có cắt tỉa alpha-beta | Tự chơi tới kết quả cuối, đồng thời thống kê số nhánh bị cắt |
-| Expectimax | MAX/Chance trên Caro | X chọn theo kỳ vọng, O là Chance, rồi tiếp tục tới trạng thái kết thúc |
+Trạng thái Caro ban đầu trong source:
 
----
+```text
+X O X
+. O .
+. . .
+```
 
-## 12. So sánh giữa các nhóm thuật toán
+Trong đó:
 
-| Nhóm thuật toán | Có heuristic | Đảm bảo lời giải | Đảm bảo tối ưu | Bộ nhớ | Phù hợp nhất khi |
-|---|---:|---:|---:|---:|---|
-| Không thông tin | Không | Có với BFS/UCS | Có với BFS/UCS nếu chi phí đều | Trung bình đến cao | Không có thông tin định hướng |
-| Có thông tin | Có | Có với A*/IDA* nếu cài đặt phù hợp | Có với A*/IDA* nếu heuristic phù hợp | Trung bình đến cao | Muốn tìm nhanh hơn BFS |
-| Cục bộ | Có | Không chắc | Không | Thấp đến trung bình | Cần minh họa tối ưu cục bộ, chạy nhanh |
-| Môi trường phức tạp | Tùy thuật toán | Tùy mô hình | Tùy thuật toán | Trung bình | Cần mô phỏng thiếu thông tin, tìm ngược, cây kế hoạch, quay lui |
-| Đối kháng / ngẫu nhiên | Không dùng heuristic 8-Puzzle | Có trong độ sâu Caro cấu hình | Có trong cây game hữu hạn đã xét | Thấp đến trung bình | Cần minh họa MAX, MIN, Chance, cắt tỉa |
+- `X` là MAX.
+- `O` là MIN hoặc Chance tùy thuật toán.
+- `.` là ô trống.
 
-### Nhận xét tổng quát
+| Thuật toán | Cách demo trong source |
+|---|---|
+| Minimax | MAX = X, MIN = O, hai bên chọn nước theo utility trong game tree |
+| Alpha-Beta | Giống Minimax nhưng có cắt tỉa nhánh bằng alpha và beta |
+| Expectimax | MAX = X, còn O được mô hình hóa như Chance node/ngẫu nhiên |
 
-- **Nhóm không thông tin** là nền tảng, dễ hiểu, phù hợp để học cách duyệt không gian trạng thái.
-- **Nhóm có thông tin** hiệu quả hơn vì dùng heuristic để ưu tiên trạng thái gần đích.
-- **Nhóm cục bộ** nhanh nhưng không chắc chắn tìm được lời giải, đặc biệt dễ mắc kẹt tại cực trị địa phương.
-- **Nhóm môi trường phức tạp** giúp mở rộng bài toán sang các tình huống thực tế hơn, nơi thông tin có thể thiếu hoặc mô hình hành động có thể phức tạp.
-- **Nhóm đối kháng / ngẫu nhiên** minh họa cách đánh giá nhánh khi có đối thủ hoặc yếu tố Chance.
-
-Nếu xét mục tiêu giải 8-Puzzle chuẩn, **BFS, UCS, A*** và **IDA*** là các lựa chọn đáng tin cậy hơn. Nếu xét mục tiêu minh họa nhiều chiến lược AI khác nhau, toàn bộ năm nhóm thuật toán trong chương trình đều có giá trị riêng.
+Các kết quả adversarial được đánh dấu `demo_only = True`, UI sẽ chuyển từ bảng 8-Puzzle sang bảng Caro và animate từng nước đi.
 
 ---
 
-## 13. Kết quả tham khảo trên trạng thái mặc định
+## 12. Heuristic và hàm chi phí
 
-Bảng sau là kết quả tham khảo khi chạy từ trạng thái mặc định của chương trình. Với các thuật toán có yếu tố ngẫu nhiên, số bước có thể thay đổi giữa các lần chạy.
+### 12.1. `g(n)`
 
-| Thuật toán | Số bước tham khảo | Đạt trạng thái đích | Nhận xét |
-|---|---:|---:|---|
-| BFS | 22 | Có | Lời giải ngắn và ổn định |
-| DFS | 50 | Có | Tìm được theo thứ tự LRUD giống bản tham khảo nhưng không tối ưu |
-| UCS | 22 | Có | Dùng `g(n)` là số bước nên tương đương BFS khi cost đều |
-| IDS | - | Không trong giới hạn mặc định | Giữ giới hạn node kiểu bản tham khảo; có thể tăng `max_nodes` nếu muốn tìm sâu hơn |
-| Greedy | 42 | Có | Nhanh nhưng không tối ưu |
-| A* | 22 | Có | Dùng `f(n)=g(n)+h(n)` chuẩn với Manhattan Distance |
-| IDA* | 22 | Có | Cho lời giải tốt và tiết kiệm bộ nhớ |
-| Simple Hill | 5 | Không | Dừng tại cực trị địa phương |
-| Steepest Hill | 5 | Không | Cũng dễ mắc kẹt |
-| Stochastic Hill | Thay đổi | Không ổn định | Phụ thuộc ngẫu nhiên |
-| Random Restart | Thay đổi | Không ổn định | Tốt hơn Hill đơn nhưng vẫn không chắc chắn |
-| Local Beam | Thay đổi | Có thể có | Giữ nhiều ứng viên nên mạnh hơn Hill đơn |
-| Simulated Annealing | Thay đổi | Không ổn định | Phụ thuộc tham số nhiệt độ |
-| Search Without Start State | 22 | Có | Tìm ngược từ goal cho kết quả tốt |
-| Partially Observable | 40 | Có | Do thiếu thông tin nên đường đi dài hơn |
-| AND-OR Search | 22 | Có | Ổn trong môi trường xác định |
-| Backtracking | 24 | Có | Có quay lui và cắt nhánh |
-| Minimax | - | Demo Caro | MAX chọn nước đi bằng giá trị minimax |
-| Alpha-Beta | - | Demo Caro | Có cắt tỉa nhánh alpha-beta trong cây đánh giá |
-| Expectimax | - | Demo Caro | Dùng kỳ vọng của các phản hồi Chance để đánh giá |
+`g(n)` là chi phí thật từ trạng thái bắt đầu đến node hiện tại. Trong dự án, mỗi bước đi có cost bằng 1 nên:
 
----
+```text
+g(n) = số bước đã đi từ Start đến n
+```
 
-## 14. Phân tích heuristic và hàm chi phí
+### 12.2. `h(n)`
 
-Chương trình sử dụng hai đại lượng chính:
-
-### Manhattan Distance - `h(n)`
+`h(n)` là chi phí ước lượng từ node hiện tại đến goal. Heuristic chính đang dùng là Manhattan Distance:
 
 ```text
 h(n) = tổng khoảng cách Manhattan của các ô số đến vị trí đích
 ```
 
-Heuristic này phù hợp với 8-Puzzle vì mỗi bước chỉ di chuyển một ô theo chiều ngang hoặc dọc.
+Không tính ô trống `0`.
 
-### Misplaced Tiles - số ô sai vị trí
+### 12.3. `f(n)`
+
+`f(n)` là hàm đánh giá tổng hợp của A* và IDA*:
 
 ```text
-Số ô sai vị trí = số ô chưa nằm đúng vị trí đích, không tính ô trống
+f(n) = g(n) + h(n)
 ```
 
-Trong chương trình, giá trị này chỉ còn là thông tin heuristic phụ/khả năng tương thích cũ. Các thuật toán UCS, A* và IDA* dùng `g(n)` là chi phí đường đi thực tế, tức số bước đã trượt từ trạng thái bắt đầu.
+### 12.4. Thuật toán dùng thành phần nào?
+
+| Thuật toán | Dựa chính trên | Dùng `g(n)` | Dùng `h(n)` | Dùng `f(n)` |
+|---|---|---:|---:|---:|
+| BFS | Độ sâu / FIFO | Gián tiếp | Không | Không |
+| DFS | Stack LIFO | Không | Không | Không |
+| UCS | Chi phí đường đi | Có | Không | Có thể xem `f=g` |
+| IDS | Depth limit | Gián tiếp | Không | Không |
+| Greedy | Heuristic | Không | Có | Có thể xem `f=h` |
+| A* | Tổng chi phí | Có | Có | Có |
+| IDA* | Ngưỡng `f` | Có | Có | Có |
+| Hill Climbing | Giảm heuristic | Không | Có | Không |
+| Local Beam | Chọn nhóm trạng thái tốt theo heuristic | Không | Có | Không |
+| Simulated Annealing | Heuristic + xác suất | Không | Có | Không |
+| Complex Search | Tùy mô hình | Có thể có | Có | Tùy thuật toán |
+| Minimax/Alpha-Beta/Expectimax | Utility game tree | Không | Không | Không |
 
 ---
 
-## 15. Ưu điểm của chương trình
+## 13. Kết quả tham khảo trên trạng thái mặc định
 
-- Giao diện trực quan, dễ thao tác.
-- Có animation minh họa từng bước đi.
-- Cài đặt nhiều thuật toán thuộc nhiều nhóm khác nhau.
-- Có log quá trình chạy và giá trị đánh giá.
-- Phù hợp để học các chiến lược tìm kiếm trong Trí tuệ nhân tạo.
-- Có thể so sánh trực tiếp kết quả giữa các thuật toán trên cùng một trạng thái.
+Bảng dưới đây là kết quả tham khảo khi chạy trực tiếp các hàm thuật toán trên trạng thái mặc định. Các thuật toán có yếu tố ngẫu nhiên có thể thay đổi giữa các lần chạy.
+
+| Thuật toán | Số bước/độ dài path tham khảo | Trạng thái kết quả | Ghi chú |
+|---|---:|---|---|
+| BFS | 22 | Đạt goal | Mở rộng khoảng 66k node trong lần chạy tham khảo |
+| DFS | 50 | Đạt goal | Không tối ưu, phụ thuộc thứ tự duyệt và giới hạn depth |
+| UCS | 22 | Đạt goal | Tối ưu theo `g(n)`, cost mỗi bước bằng 1 |
+| IDS | Không thấy trong giới hạn mặc định | Không có path | `max_depth=30`, có thể bị giới hạn node/thời gian |
+| Greedy | 42 | Đạt goal | Nhanh nhưng không tối ưu |
+| A* | 22 | Đạt goal | Dùng Manhattan, số node mở ít hơn BFS/UCS |
+| IDA* | 22 | Đạt goal | Tìm được với threshold cuối là 22 trong lần chạy tham khảo |
+| Simple Hill | 7 | Dừng ở local optimum | Dừng khi không còn neighbor tốt hơn |
+| Steepest Hill | 7 | Dừng ở local optimum | Chọn neighbor tốt nhất nhưng vẫn có thể kẹt |
+| Stochastic Hill | Thay đổi | Không ổn định | Phụ thuộc random |
+| Random Restart | Thay đổi | Không đảm bảo goal | Tốt hơn hill climbing đơn nhưng vẫn không chắc chắn |
+| Local Beam | Có thể đạt goal | Phụ thuộc random | Giữ nhiều candidate cùng lúc |
+| Simulated Annealing | Thay đổi | Không đảm bảo goal | Có thể dừng ở trạng thái tốt nhất tìm được |
+| Không trạng thái đầu | 22 | Đạt goal | Tìm ngược từ goal về trạng thái hiện tại |
+| Quan sát một phần | 40 | Đạt goal | Chỉ dùng thông tin các ô 1-4 nên đường đi dài hơn |
+| AND-OR Search | 22 | Đạt goal | Minh họa OR/AND trong môi trường xác định |
+| Backtracking | 24 | Đạt goal | Có quay lui và cắt nhánh |
+| AC-3 | 22 | Đạt goal | AC-3 tiền xử lý CSP rồi tìm đường đi |
+| Min-Conflicts | Thay đổi | Có thể đạt goal | Dùng số xung đột và khoảng cách để ưu tiên |
+| Minimax | 5 nước Caro | Demo Caro | Không phải solver 8-Puzzle |
+| Alpha-Beta | 5 nước Caro | Demo Caro | Có cắt tỉa nhánh |
+| Expectimax | 5 nước Caro | Demo Caro | Có Chance node |
 
 ---
 
-## 16. Hạn chế và hướng phát triển
+## 14. Cách sử dụng giao diện
 
-### Hạn chế
+### 14.1. Chơi thủ công
 
-- Một số thuật toán cục bộ không đảm bảo tìm được lời giải.
-- Kết quả của thuật toán ngẫu nhiên có thể thay đổi giữa các lần chạy.
-- Chưa có bảng thống kê tự động thời gian chạy, số nút mở rộng và bộ nhớ sử dụng cho tất cả thuật toán.
+| Phím | Chức năng |
+|---|---|
+| `↑` | Di chuyển ô số theo hướng lên nếu hợp lệ |
+| `↓` | Di chuyển ô số theo hướng xuống nếu hợp lệ |
+| `←` | Di chuyển ô số theo hướng trái nếu hợp lệ |
+| `→` | Di chuyển ô số theo hướng phải nếu hợp lệ |
+| `ESC` | Thoát chương trình |
 
-### Hướng phát triển
+### 14.2. Nút chức năng
 
-- Bổ sung thống kê thời gian chạy cho từng thuật toán.
-- Đếm số nút đã mở rộng và kích thước frontier lớn nhất.
-- Cho phép người dùng nhập trạng thái ban đầu tùy ý.
-- Mở rộng hiển thị thống kê số nút đã sinh, số nút đã mở rộng và kích thước frontier cho tất cả thuật toán.
-- Xuất kết quả so sánh ra file CSV hoặc Excel.
+| Nút | Chức năng |
+|---|---|
+| `Xáo Trộn` | Trộn bảng bằng các nước đi ngẫu nhiên hợp lệ |
+| `Chơi Lại` | Đưa bảng về trạng thái mặc định |
+| `Dừng Lại` | Tạm dừng animation |
+| `Tiếp Tục` | Tiếp tục animation sau khi dừng |
+
+### 14.3. Nút thuật toán
+
+Người dùng bấm trực tiếp vào nút thuật toán. Nếu thuật toán tìm được path, UI sẽ animate từng bước trên bảng. Nếu thuật toán adversarial/stochastic được chọn, UI chuyển sang bảng Caro 3x3 và animate nước đi X/O.
+
+---
+
+## 15. Kiểm tra trước khi nộp
+
+Trước khi nộp hoặc push lên GitHub, nên kiểm tra các bước sau:
+
+```bash
+python -m py_compile main.py ui.py grid.py utils.py algorithm_core.py algorithms_uninformed.py algorithms_informed.py algorithms_local.py algorithms_complex.py adversarial.py
+python -m pip install pygame
+python main.py
+```
+
+Checklist:
+
+- [ ] Chạy được `python main.py`.
+- [ ] Không còn bọc code trong thư mục con không cần thiết trên GitHub.
+- [ ] `README.md` nằm cùng cấp với `main.py`.
+- [ ] Thư mục `GIF/` nằm cùng cấp với `README.md`.
+- [ ] Các file video `.mp4` vẫn giữ đúng tên như trong README.
+- [ ] Các nút BFS, DFS, UCS, IDS, Greedy, A*, IDA* chạy được.
+- [ ] Nhóm local search có thể dừng trước goal và điều này được giải thích trong báo cáo.
+- [ ] Nhóm adversarial/stochastic được trình bày là demo Caro 3x3, không phải solver 8-Puzzle.
+
+---
+
+## 16. Lưu ý khi trình bày báo cáo
+
+Một số điểm cần nhấn mạnh khi bảo vệ bài:
+
+1. **8-Puzzle là deterministic, fully observable, single-agent**, nên BFS, UCS, A* và IDA* là các solver phù hợp nhất.
+2. **Greedy dùng `h(n)` nên nhanh nhưng không tối ưu**.
+3. **A* dùng `f(n)=g(n)+h(n)` nên cân bằng giữa chi phí đã đi và ước lượng còn lại**.
+4. **Local search không đảm bảo tìm goal**, vì nó có thể mắc kẹt ở local optimum, plateau hoặc đi theo hướng ngẫu nhiên.
+5. **Complex environment** trong dự án chủ yếu dùng để minh họa các biến thể học thuật như quan sát một phần, tìm ngược, AND-OR, CSP.
+6. **Minimax, Alpha-Beta, Expectimax được demo bằng Caro 3x3**, vì 8-Puzzle không có đối thủ thật.
 
 ---
 
 ## 17. Kết luận
 
-Dự án 8-Puzzle này không chỉ giải một trò chơi trượt số đơn giản mà còn minh họa nhiều nhóm thuật toán tìm kiếm quan trọng trong Trí tuệ nhân tạo. Qua việc so sánh các thuật toán trong cùng nhóm và khác nhóm, có thể thấy rằng không có thuật toán nào tốt nhất cho mọi tình huống.
+Dự án đã xây dựng một chương trình trực quan hóa 8-Puzzle bằng Python và Pygame, đồng thời cài đặt nhiều nhóm thuật toán tìm kiếm trong Trí tuệ nhân tạo. Chương trình không chỉ cho phép người dùng quan sát lời giải của bài toán 8-Puzzle mà còn giúp so sánh bản chất của từng thuật toán thông qua cách chọn node, sử dụng frontier, reached, heuristic và hàm chi phí.
 
-- Khi cần lời giải chắc chắn và ngắn: nên dùng **BFS**, **UCS**, **A*** hoặc **IDA***.
-- Khi cần minh họa duyệt sâu: có thể dùng **DFS** và **Backtracking**.
-- Khi cần minh họa heuristic: nên dùng **Greedy**, **A***, **IDA***.
-- Khi cần minh họa cực trị địa phương và ngẫu nhiên: nên dùng nhóm **Hill Climbing**, **Local Beam**, **Simulated Annealing**.
-- Khi cần mô phỏng môi trường thiếu thông tin hoặc phức tạp: dùng **Partially Observable Search**, **AND-OR Search** và **Search Without Start State**.
-- Khi cần minh họa đối kháng hoặc Chance: dùng **Minimax**, **Alpha-Beta** và **Expectimax**.
-
-Chương trình phù hợp làm bài thực hành, bài báo cáo hoặc demo môn Trí tuệ nhân tạo về chủ đề tìm kiếm trong không gian trạng thái.
+Các thuật toán như **BFS, UCS, A*** và **IDA*** phù hợp để giải bài toán 8-Puzzle chuẩn. Các thuật toán local search giúp minh họa hiện tượng kẹt cực trị địa phương. Nhóm complex search và adversarial/stochastic mở rộng góc nhìn sang các mô hình học thuật khác như quan sát một phần, CSP, AND-OR tree, Minimax, Alpha-Beta và Expectimax.
