@@ -1,4 +1,0 @@
-py -3.13 "d:\Trí tuệ nhân tạo\8 puzzle\main.py
-https://github.com/UTESnake/8_puzzle_AI
-g(n): số ô sai vị trí
-h(n): manhattan
