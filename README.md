@@ -64,11 +64,21 @@ Trong đó `0` biểu diễn ô trống.
 
 ---
 
-## 0.2. GIF demo các thuật toán
+## 0.2. Ảnh giao diện và GIF demo thuật toán
 
-Các file demo phải nằm trong thư mục `GIF/` cùng cấp với `README.md` và `main.py`.
+Trong repo hiện tại, ảnh giao diện chính đang nằm trong thư mục `GIF/` với tên:
 
-**Bản README này dùng đúng tên file trong thư mục GIF hiện tại của bạn. Riêng **MAIN_INTERFACE.gif** và **IDS.gif** đã được cập nhật lại theo đúng hai ảnh bạn gửi gần nhất.** Các file có dấu cách như `SIMPLE HILL.gif`, `LOCAL BEAM.gif`, `ALPHA BETA.gif` đã được mã hóa đường dẫn thành `%20` để GitHub load đúng.
+```text
+GIF/UI.png
+```
+
+Vì vậy README phải gọi đúng đường dẫn:
+
+```html
+<img src="./GIF/UI.png">
+```
+
+Không dùng `GIF/MAIN_INTERFACE.gif` nữa, vì bạn đang upload ảnh giao diện là file `.png`, không phải `.gif`.
 
 Cấu trúc đúng trên GitHub:
 
@@ -80,7 +90,7 @@ Cấu trúc đúng trên GitHub:
 ├── grid.py
 ├── utils.py
 └── GIF/
-    ├── MAIN_INTERFACE.gif
+    ├── UI.png
     ├── BFS.gif
     ├── DFS.gif
     ├── UCS.gif
@@ -105,29 +115,30 @@ Cấu trúc đúng trên GitHub:
     └── EXPECTIMAX.gif
 ```
 
-> Nếu ảnh không hiện, nguyên nhân thường là tên file trong repo không khớp đúng 100% với tên trong bảng, hoặc `README.md` không nằm cùng cấp với thư mục `GIF/`. Ảnh **Giao diện chính** và **IDS** trong bản này là ảnh chụp giao diện tĩnh để GitHub load ổn định.
+> GitHub phân biệt chữ hoa/chữ thường và dấu cách trong tên file. Nếu file trong repo là `UI.png` thì README cũng phải viết đúng `UI.png`, không viết `ui.png`, `ui.pnj`, `MAIN_INTERFACE.gif` hoặc `UI.PNG`.
 
-### 0.2.1. Hai ảnh giao diện được cập nhật
+### 0.2.1. Giao diện chính
 
-- **Giao diện chính**: dùng ảnh toàn bộ giao diện mà bạn vừa gửi.
-- **IDS**: dùng ảnh minh họa trường hợp thuật toán IDS báo *"không tìm thấy trong giới hạn"*.
+<p align="center">
+  <a href="./GIF/UI.png">
+    <img src="./GIF/UI.png" width="850" alt="Giao diện chính của chương trình 8-Puzzle AI">
+  </a>
+</p>
+
+### 0.2.2. GIF demo thuật toán
+
+Các GIF thuật toán nằm trong thư mục `GIF/` cùng cấp với `README.md`. Các file có dấu cách như `SIMPLE HILL.gif`, `LOCAL BEAM.gif`, `ALPHA BETA.gif` đã được mã hóa đường dẫn thành `%20` để GitHub load đúng.
 
 <table>
   <thead>
     <tr>
       <th>Nhóm thuật toán</th>
       <th>Thuật toán</th>
-      <th>GIF demo</th>
+      <th>Demo</th>
       <th>File cần có trong repo</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Giao diện</td>
-      <td><b>Giao diện chính</b></td>
-      <td><a href="./GIF/MAIN_INTERFACE.gif"><img src="./GIF/MAIN_INTERFACE.gif" width="420" alt="Giao diện chính demo"></a></td>
-      <td><code>GIF/MAIN_INTERFACE.gif</code></td>
-    </tr>
     <tr>
       <td>Uninformed Search</td>
       <td><b>BFS</b></td>
@@ -161,13 +172,13 @@ Cấu trúc đúng trên GitHub:
     <tr>
       <td>Informed Search</td>
       <td><b>A* Search</b></td>
-      <td><a href="./GIF/A_STAR.gif"><img src="./GIF/A_STAR.gif" width="420" alt="Astar Search demo"></a></td>
+      <td><a href="./GIF/A_STAR.gif"><img src="./GIF/A_STAR.gif" width="420" alt="A* Search demo"></a></td>
       <td><code>GIF/A_STAR.gif</code></td>
     </tr>
     <tr>
       <td>Informed Search</td>
       <td><b>IDA* Search</b></td>
-      <td><a href="./GIF/IDA_STAR.gif"><img src="./GIF/IDA_STAR.gif" width="420" alt="IDAstar Search demo"></a></td>
+      <td><a href="./GIF/IDA_STAR.gif"><img src="./GIF/IDA_STAR.gif" width="420" alt="IDA* Search demo"></a></td>
       <td><code>GIF/IDA_STAR.gif</code></td>
     </tr>
     <tr>
@@ -264,9 +275,9 @@ Cấu trúc đúng trên GitHub:
 </table>
 
 <details>
-<summary>Danh sách file GIF bắt buộc phải có</summary>
+<summary>Danh sách file cần có</summary>
 
-- `GIF/MAIN_INTERFACE.gif`
+- `GIF/UI.png`
 - `GIF/BFS.gif`
 - `GIF/DFS.gif`
 - `GIF/UCS.gif`
@@ -418,13 +429,11 @@ Cấu trúc thực tế sau khi đọc source code:
 ├── adversarial.py
 ├── README.md
 └── GIF/
-    ├── MAIN_INTERFACE.gif
-    ├── BFS.gif
-    ├── DFS.gif
-    ├── UCS.gif
-    ├── IDS.gif
-    ├── GREEDY.gif
-    ├── A_STAR.gif
+    ├── BFS.mp4
+    ├── DFS.mp4
+    ├── UCS.mp4
+    ├── GREEDY.mp4
+    ├── A_STAR.mp4
     └── ...
 ```
 
@@ -834,7 +843,7 @@ Checklist:
 - [ ] Không còn bọc code trong thư mục con không cần thiết trên GitHub.
 - [ ] `README.md` nằm cùng cấp với `main.py`.
 - [ ] Thư mục `GIF/` nằm cùng cấp với `README.md`.
-- [ ] Các file video `.mp4` vẫn giữ đúng tên như trong README.
+- [ ] File `GIF/UI.png` và các file `.gif` vẫn giữ đúng tên như trong README.
 - [ ] Các nút BFS, DFS, UCS, IDS, Greedy, A*, IDA* chạy được.
 - [ ] Nhóm local search có thể dừng trước goal và điều này được giải thích trong báo cáo.
 - [ ] Nhóm adversarial/stochastic được trình bày là demo Caro 3x3, không phải solver 8-Puzzle.
