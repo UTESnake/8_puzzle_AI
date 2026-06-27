@@ -68,7 +68,7 @@ Trong đó `0` biểu diễn ô trống.
 
 Các file demo phải nằm trong thư mục `GIF/` cùng cấp với `README.md` và `main.py`.
 
-**Bản README này dùng đúng tên file trong thư mục GIF hiện tại của bạn.** Các file có dấu cách như `SIMPLE HILL.gif`, `LOCAL BEAM.gif`, `ALPHA BETA.gif` đã được mã hóa đường dẫn thành `%20` để GitHub load đúng.
+**Bản README này dùng đúng tên file trong thư mục GIF hiện tại của bạn. Riêng **MAIN_INTERFACE.gif** và **IDS.gif** đã được cập nhật lại theo đúng hai ảnh bạn gửi gần nhất.** Các file có dấu cách như `SIMPLE HILL.gif`, `LOCAL BEAM.gif`, `ALPHA BETA.gif` đã được mã hóa đường dẫn thành `%20` để GitHub load đúng.
 
 Cấu trúc đúng trên GitHub:
 
@@ -105,7 +105,12 @@ Cấu trúc đúng trên GitHub:
     └── EXPECTIMAX.gif
 ```
 
-> Nếu ảnh không hiện, nguyên nhân thường là tên file trong repo không khớp đúng 100% với tên trong bảng, hoặc `README.md` không nằm cùng cấp với thư mục `GIF/`.
+> Nếu ảnh không hiện, nguyên nhân thường là tên file trong repo không khớp đúng 100% với tên trong bảng, hoặc `README.md` không nằm cùng cấp với thư mục `GIF/`. Ảnh **Giao diện chính** và **IDS** trong bản này là ảnh chụp giao diện tĩnh để GitHub load ổn định.
+
+### 0.2.1. Hai ảnh giao diện được cập nhật
+
+- **Giao diện chính**: dùng ảnh toàn bộ giao diện mà bạn vừa gửi.
+- **IDS**: dùng ảnh minh họa trường hợp thuật toán IDS báo *"không tìm thấy trong giới hạn"*.
 
 <table>
   <thead>
@@ -413,11 +418,13 @@ Cấu trúc thực tế sau khi đọc source code:
 ├── adversarial.py
 ├── README.md
 └── GIF/
-    ├── BFS.mp4
-    ├── DFS.mp4
-    ├── UCS.mp4
-    ├── GREEDY.mp4
-    ├── A_STAR.mp4
+    ├── MAIN_INTERFACE.gif
+    ├── BFS.gif
+    ├── DFS.gif
+    ├── UCS.gif
+    ├── IDS.gif
+    ├── GREEDY.gif
+    ├── A_STAR.gif
     └── ...
 ```
 
