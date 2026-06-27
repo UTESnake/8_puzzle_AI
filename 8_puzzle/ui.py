@@ -22,7 +22,8 @@ from algorithms_complex import (
     ac3_search,
     min_conflicts_search,
 )
-from utils import g_cost, h_cost
+from adversarial import minimax_search, alpha_beta_search, expectimax_search
+from utils import h_cost
 
 # --- Constants & Colors ---
 BG_APP = (242, 247, 246)
@@ -45,12 +46,12 @@ BTN_LIME = (166, 204, 104)
 BORDER_COLOR = (208, 224, 229)
 WHITE = (255, 255, 255)
 
-WIN_W, WIN_H = 1120, 835
+WIN_W, WIN_H = 1120, 920
 GRID_SIZE, CELL_PX, GRID_PAD = 3, 68, 8
 BOARD_W = GRID_SIZE * CELL_PX + (GRID_SIZE - 1) * GRID_PAD
 GRID_START_X, GRID_START_Y = 90, 182
 GOAL_START_X, GOAL_START_Y = 380, 182
-PANEL_RECT = pygame.Rect(20, 10, 1080, 810)
+PANEL_RECT = pygame.Rect(20, 10, 1080, 900)
 LOG_RECT = pygame.Rect(695, 158, 360, 360)
 SOLVE_DELAY_MS = 300
 
@@ -191,6 +192,20 @@ def draw_button_icon(surf, kind, center, color=TEXT_DARK):
         pygame.draw.line(surf, color, (x + 9, y - 7), (x - 9, y + 7), 2)
         pygame.draw.circle(surf, PANEL_BG, (x, y), 4)
         pygame.draw.circle(surf, color, (x, y), 4, 2)
+    elif kind == "minimax":
+        pygame.draw.circle(surf, color, (x, y - 9), 3)
+        for pt in ((x - 9, y + 5), (x, y + 5), (x + 9, y + 5)):
+            pygame.draw.line(surf, color, (x, y - 6), pt, 2)
+            pygame.draw.circle(surf, color, pt, 3)
+    elif kind == "alphabeta":
+        label = F_ICON.render("AB", True, color)
+        surf.blit(label, label.get_rect(center=(x, y)))
+        pygame.draw.line(surf, color, (x - 12, y + 9), (x + 12, y - 9), 2)
+    elif kind == "expectimax":
+        pygame.draw.circle(surf, color, (x, y - 8), 3)
+        for pt in ((x - 8, y + 6), (x, y + 7), (x + 8, y + 6)):
+            pygame.draw.line(surf, color, (x, y - 5), pt, 2)
+            pygame.draw.rect(surf, color, (pt[0] - 3, pt[1] - 3, 6, 6), 1, border_radius=1)
     else:
         label = F_ICON.render(str(kind)[:1], True, color)
         surf.blit(label, label.get_rect(center=center))
@@ -252,6 +267,13 @@ class PuzzleApp:
         self.log_drag_offset = 0
         self.notice_text = ""
         self.notice_until = 0
+        self.result_title = ""
+        self.result_lines = []
+        self.demo_board = None
+        self.demo_highlight = None
+        self.demo_animating = []
+        self.demo_total = 0
+        self.demo_result = None
 
         # Khởi tạo Nút
         self.btns = {
@@ -277,6 +299,9 @@ class PuzzleApp:
             'backtracking': Btn((549, 766, 150, 34), "Backtracking", BTN_CORAL, "backtrack"),
             'ac3': Btn((711, 766, 130, 34), "AC-3", BTN_SKY, "ac3"),
             'min_conflicts': Btn((853, 766, 145, 34), "Min-Conflicts", BTN_LIME, "conflict"),
+            'minimax': Btn((62, 850, 170, 34), "Minimax", BTN_MINT, "minimax"),
+            'alpha_beta': Btn((254, 850, 190, 34), "Alpha-Beta", BTN_VIOLET, "alphabeta"),
+            'expectimax': Btn((466, 850, 180, 34), "Expectimax", BTN_AMBER, "expectimax"),
         }
         self.algorithms = {
             'bfs': (bfs, "BFS"),
@@ -298,6 +323,9 @@ class PuzzleApp:
             'backtracking': (backtracking_search, "Backtracking"),
             'ac3': (ac3_search, "AC-3"),
             'min_conflicts': (min_conflicts_search, "Min-Conflicts"),
+            'minimax': (minimax_search, "Minimax"),
+            'alpha_beta': (alpha_beta_search, "Alpha-Beta"),
+            'expectimax': (expectimax_search, "Expectimax"),
         }
         self.uninformed_labels = {"BFS", "DFS", "UCS", "IDS"}
         self.cost_modes = {
@@ -317,6 +345,9 @@ class PuzzleApp:
             "Backtracking": "h",
             "AC-3": "h",
             "Min-Conflicts": "h",
+            "Minimax": "h",
+            "Alpha-Beta": "h",
+            "Expectimax": "h",
         }
 
     def draw_soft_rect(self, rect, color, radius=18, border=None):
@@ -331,6 +362,33 @@ class PuzzleApp:
         rect = surf.get_rect(center=center)
         rect.x += icon_gap
         self.screen.blit(surf, rect)
+
+    def set_result(self, title, lines):
+        self.result_title = title
+        self.result_lines = [line for line in lines if line][:4]
+
+    def clear_demo_board(self):
+        self.demo_board = None
+        self.demo_highlight = None
+        self.demo_animating = []
+        self.demo_total = 0
+        self.demo_result = None
+
+    def set_demo_highlight_from_action(self, action):
+        self.demo_highlight = None
+        if not action:
+            return
+        try:
+            _, position = action.split("@", 1)
+            row_text, col_text = position.split(",", 1)
+            self.demo_highlight = (int(row_text) - 1, int(col_text) - 1)
+        except (ValueError, IndexError):
+            self.demo_highlight = None
+
+    def set_demo_board_from_result(self, result):
+        self.demo_board = getattr(result, "demo_board", None)
+        actions = getattr(result, "actions", [])
+        self.set_demo_highlight_from_action(actions[-1] if actions else "")
 
     def add_log(self, text):
         was_at_bottom = self.log_scroll == 0
@@ -405,12 +463,12 @@ class PuzzleApp:
         self.add_log(f"{source}: {self.num_steps}. Ô {tile} {arrows[direction]}")
         return True
 
-    def add_cost_log(self, label):
-        g_value = g_cost(self.puzzle.state, self.puzzle.goal)
+    def add_cost_log(self, label, path_steps=0):
+        g_value = path_steps
         h_value = h_cost(self.puzzle.state, self.puzzle.goal)
         mode = self.cost_modes.get(label)
         if mode == "g":
-            self.add_log(f"g(n)={g_value} ô sai")
+            self.add_log(f"g(n)={g_value} bước")
         elif mode == "h":
             self.add_log(f"h(n)={h_value}")
         elif mode == "f":
@@ -535,12 +593,27 @@ class PuzzleApp:
                 hi = mid - 1
         return text[:lo] + suffix
 
+    def trim_text(self, text, font, max_width):
+        if font.size(text)[0] <= max_width:
+            return text
+
+        suffix = "..."
+        lo, hi = 0, len(text)
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if font.size(text[:mid] + suffix)[0] <= max_width:
+                lo = mid
+            else:
+                hi = mid - 1
+        return text[:lo] + suffix
+
     def draw_algorithm_groups(self):
         groups = [
             ("Tìm kiếm không thông tin", pygame.Rect(46, 532, 600, 82)),
             ("Tìm kiếm có thông tin", pygame.Rect(666, 532, 390, 82)),
             ("Tìm kiếm cục bộ", pygame.Rect(46, 632, 1010, 76)),
             ("Tìm kiếm trong môi trường phức tạp", pygame.Rect(46, 732, 1010, 76)),
+            ("Tìm kiếm đối kháng / ngẫu nhiên", pygame.Rect(46, 816, 1010, 76)),
         ]
 
         for title, rect in groups:
@@ -587,6 +660,61 @@ class PuzzleApp:
                     lbl = F_NUMBER.render(str(val), True, text_color)
                     self.screen.blit(lbl, lbl.get_rect(center=rect.center))
 
+    def draw_caro_board(self, board, start_x, start_y):
+        board_rect = pygame.Rect(start_x - 14, start_y - 14, BOARD_W + 28, BOARD_W + 28)
+        pygame.draw.rect(self.screen, BOARD_FRAME, board_rect, border_radius=14)
+        pygame.draw.rect(self.screen, (191, 225, 218), board_rect, 2, border_radius=14)
+
+        for r in range(GRID_SIZE):
+            for c in range(GRID_SIZE):
+                val = board[r * GRID_SIZE + c]
+                px = start_x + c * (CELL_PX + GRID_PAD)
+                py = start_y + r * (CELL_PX + GRID_PAD)
+                rect = pygame.Rect(px, py, CELL_PX, CELL_PX)
+
+                if val == ".":
+                    bg_color = EMPTY_CELL_BG
+                    text_color = TEXT_LIGHT
+                    shadow_color = (202, 216, 218)
+                elif val == "X":
+                    bg_color = CELL_BLUE
+                    text_color = WHITE
+                    shadow_color = (135, 165, 188)
+                else:
+                    bg_color = CELL_GREEN
+                    text_color = WHITE
+                    shadow_color = (132, 174, 130)
+
+                pygame.draw.rect(self.screen, shadow_color, rect.move(3, 4), border_radius=8)
+                pygame.draw.rect(self.screen, bg_color, rect, border_radius=8)
+                border = BTN_AMBER if self.demo_highlight == (r, c) else BORDER_COLOR
+                pygame.draw.rect(self.screen, border, rect, 3 if self.demo_highlight == (r, c) else 1, border_radius=8)
+
+                if val != ".":
+                    lbl = F_NUMBER.render(val, True, text_color)
+                    self.screen.blit(lbl, lbl.get_rect(center=rect.center))
+
+    def draw_result_panel(self):
+        if not self.result_lines:
+            guide_1 = F_HINT.render("Hãy sắp xếp các số", True, TEXT_MID)
+            guide_2 = F_HINT.render("giống với hình mẫu nhé!", True, TEXT_MID)
+            self.screen.blit(guide_1, guide_1.get_rect(center=(GOAL_START_X + BOARD_W // 2, 442)))
+            self.screen.blit(guide_2, guide_2.get_rect(center=(GOAL_START_X + BOARD_W // 2, 464)))
+            return
+
+        rect = pygame.Rect(GOAL_START_X - 12, 414, BOARD_W + 24, 68)
+        pygame.draw.rect(self.screen, (247, 251, 250), rect, border_radius=10)
+        pygame.draw.rect(self.screen, (219, 232, 233), rect, 1, border_radius=10)
+
+        title = self.trim_text(self.result_title or "Kết quả", F_GROUP, rect.width - 20)
+        title_surf = F_GROUP.render(title, True, TEXT_MID)
+        self.screen.blit(title_surf, (rect.x + 10, rect.y + 7))
+
+        for idx, line in enumerate(self.result_lines[:3]):
+            line = self.trim_text(line, F_SM, rect.width - 20)
+            line_surf = F_SM.render(line, True, TEXT_DARK if idx == 0 else TEXT_MID)
+            self.screen.blit(line_surf, (rect.x + 10, rect.y + 25 + idx * 14))
+
     def draw_ui(self):
         self.screen.fill(PANEL_BG)
         pygame.draw.rect(self.screen, PANEL_BG, PANEL_RECT, border_radius=22)
@@ -602,17 +730,18 @@ class PuzzleApp:
         self.draw_notice()
 
         self.draw_small_icon("board", (GRID_START_X + 8, 146), TEXT_MID)
-        self.screen.blit(F_LABEL.render("Bảng Chơi", True, TEXT_MID), (GRID_START_X + 24, 136))
-        self.draw_board(self.puzzle.state, GRID_START_X, GRID_START_Y)
+        board_title = "Bảng Caro" if self.demo_board else "Bảng Chơi"
+        self.screen.blit(F_LABEL.render(board_title, True, TEXT_MID), (GRID_START_X + 24, 136))
+        if self.demo_board:
+            self.draw_caro_board(self.demo_board, GRID_START_X, GRID_START_Y)
+        else:
+            self.draw_board(self.puzzle.state, GRID_START_X, GRID_START_Y)
 
         self.draw_small_icon("goal", (GOAL_START_X + 8, 146), TEXT_MID)
         self.screen.blit(F_LABEL.render("Hình Mẫu", True, TEXT_MID), (GOAL_START_X + 24, 136))
         self.draw_board(self.puzzle.goal, GOAL_START_X, GOAL_START_Y, is_goal=True)
 
-        guide_1 = F_HINT.render("Hãy sắp xếp các số", True, TEXT_MID)
-        guide_2 = F_HINT.render("giống với hình mẫu nhé!", True, TEXT_MID)
-        self.screen.blit(guide_1, guide_1.get_rect(center=(GOAL_START_X + BOARD_W // 2, 442)))
-        self.screen.blit(guide_2, guide_2.get_rect(center=(GOAL_START_X + BOARD_W // 2, 464)))
+        self.draw_result_panel()
 
         steps = F_STEPS.render(f"Số Bước: {self.num_steps}", True, TEXT_DARK)
         steps_rect = steps.get_rect(center=(GRID_START_X + BOARD_W // 2 + 18, 432))
@@ -630,7 +759,7 @@ class PuzzleApp:
         self.btns["stop"].icon_kind = "play" if paused else "stop"
 
     def toggle_pause(self):
-        if not self.animating_path:
+        if not self.animating_path and not self.demo_animating:
             self.paused = False
             self.set_pause_button(False)
             self.add_log("Không có thuật toán đang chạy.")
@@ -651,6 +780,9 @@ class PuzzleApp:
         self.active_algo = ""
         self.animation_total = 0
         self.paused = False
+        self.clear_demo_board()
+        self.result_title = ""
+        self.result_lines = []
         self.set_pause_button(False)
         self.add_log("Đã chơi lại.")
 
@@ -659,6 +791,9 @@ class PuzzleApp:
         self.active_algo = ""
         self.animation_total = 0
         self.paused = False
+        self.clear_demo_board()
+        self.result_title = ""
+        self.result_lines = []
         self.set_pause_button(False)
         for _ in range(50):
             self.puzzle.move(random.choice(["up", "down", "left", "right"]))
@@ -669,6 +804,29 @@ class PuzzleApp:
         path = algo_func(self.puzzle)
         if path is not None:
             details = getattr(path, "details", [])
+            if getattr(path, "demo_only", False):
+                self.animating_path = []
+                self.active_algo = label
+                self.animation_total = 0
+                self.paused = False
+                self.set_pause_button(False)
+                self.demo_result = path
+                self.demo_board = getattr(path, "demo_initial_board", None)
+                self.demo_highlight = None
+                self.demo_animating = list(getattr(path, "demo_steps", []))
+                self.demo_total = len(self.demo_animating)
+                self.last_anim_time = pygame.time.get_ticks()
+                self.add_log(f"{label}: bắt đầu mô phỏng {self.demo_total} nước.")
+                self.set_result(
+                    f"Đang chạy: {label}",
+                    [f"Tổng số nước: {self.demo_total}", "Đang mô phỏng từng bước."],
+                )
+                self.show_notice(f"{label}: bắt đầu mô phỏng {self.demo_total} nước.")
+                if not self.demo_animating:
+                    self.finish_demo_animation()
+                return
+
+            self.clear_demo_board()
             self.animating_path = list(path)
             self.active_algo = label
             self.animation_total = len(path)
@@ -679,21 +837,63 @@ class PuzzleApp:
             for detail in details:
                 self.add_log(f"{label}: {detail}")
             if self.should_log_cost(label):
-                self.add_cost_log(label)
+                self.add_cost_log(label, 0)
+            self.set_result(f"Đang chạy: {label}", [f"Dự kiến: {len(path)} bước", "Đang animate trên bảng chơi."])
             if not path:
                 if self.puzzle.is_goal():
                     self.add_log("Bảng đã đúng hình mẫu.")
+                    self.set_result(f"Kết quả: {label}", ["Bảng đã đúng hình mẫu.", "Số bước: 0"])
                 else:
                     self.add_log(f"{label}: dừng tại cực trị.")
+                    self.set_result(f"Kết quả: {label}", ["Dừng tại cực trị.", "Số bước: 0"])
                 self.active_algo = ""
                 self.set_pause_button(False)
         else:
             if label in self.uninformed_labels:
-                message = f"{label}: không giải được."
+                message = f"{label}: không tìm thấy trong giới hạn."
             else:
                 message = f"{label}: không tìm thấy lời giải."
             self.add_log(message)
+            self.set_result(f"Kết quả: {label}", [message, f"Số bước: {self.num_steps}"])
             self.show_notice(message)
+
+    def play_next_demo_step(self):
+        if not self.demo_animating:
+            return
+
+        step = self.demo_animating.pop(0)
+        action = step.get("action", "")
+        board = step.get("board")
+        if board:
+            self.demo_board = board
+        self.set_demo_highlight_from_action(action)
+
+        current = self.demo_total - len(self.demo_animating)
+        self.add_log(f"{self.active_algo} {current}/{self.demo_total}: {action}")
+        self.set_result(
+            f"Đang chạy: {self.active_algo}",
+            [f"Nước {current}/{self.demo_total}: {action}", "Bảng Caro đang cập nhật."],
+        )
+
+        if not self.demo_animating:
+            self.finish_demo_animation()
+
+    def finish_demo_animation(self):
+        result = self.demo_result
+        label = self.active_algo
+        if result is not None:
+            self.set_demo_board_from_result(result)
+            message = getattr(result, "message", f"hoàn tất sau {self.demo_total} nước.")
+            self.add_log(f"{label}: {message}")
+            for detail in getattr(result, "details", []):
+                self.add_log(f"{label}: {detail}")
+            summary_lines = getattr(result, "summary_lines", []) or [message]
+            self.set_result(f"Kết quả: {label}", summary_lines)
+            self.show_notice(f"{label}: hoàn tất {self.demo_total} nước.")
+
+        self.active_algo = ""
+        self.paused = False
+        self.set_pause_button(False)
 
     def run(self):
         while True:
@@ -735,11 +935,19 @@ class PuzzleApp:
                 if ev.type == pygame.MOUSEMOTION and self.log_dragging:
                     self.set_log_scroll_from_mouse(ev.pos[1])
                 
-                if ev.type == pygame.KEYDOWN and not self.animating_path:
-                    if ev.key == pygame.K_UP: self.move_and_log("up")
-                    elif ev.key == pygame.K_DOWN: self.move_and_log("down")
-                    elif ev.key == pygame.K_LEFT: self.move_and_log("left")
-                    elif ev.key == pygame.K_RIGHT: self.move_and_log("right")
+                if ev.type == pygame.KEYDOWN and not self.animating_path and not self.demo_animating:
+                    if ev.key == pygame.K_UP:
+                        self.clear_demo_board()
+                        self.move_and_log("up")
+                    elif ev.key == pygame.K_DOWN:
+                        self.clear_demo_board()
+                        self.move_and_log("down")
+                    elif ev.key == pygame.K_LEFT:
+                        self.clear_demo_board()
+                        self.move_and_log("left")
+                    elif ev.key == pygame.K_RIGHT:
+                        self.clear_demo_board()
+                        self.move_and_log("right")
 
                 if self.btns['stop'].is_clicked(ev):
                     self.toggle_pause()
@@ -752,7 +960,7 @@ class PuzzleApp:
                     self.shuffle_game()
                     continue
 
-                if not self.animating_path:
+                if not self.animating_path and not self.demo_animating:
                     for key, (algo_func, label) in self.algorithms.items():
                         if self.btns[key].is_clicked(ev):
                             self.solve_and_animate(algo_func, label)
@@ -766,16 +974,34 @@ class PuzzleApp:
                     current = self.animation_total - len(self.animating_path)
                     self.move_and_log(step, f"{self.active_algo} {current}/{self.animation_total}")
                     if self.should_log_cost(self.active_algo):
-                        self.add_cost_log(self.active_algo)
+                        self.add_cost_log(self.active_algo, current)
                     self.last_anim_time = now
                     if not self.animating_path:
+                        finished_algo = self.active_algo
+                        total_steps = self.animation_total
                         if self.puzzle.is_goal():
-                            self.add_log(f"{self.active_algo}: hoàn thành.")
+                            self.add_log(f"{finished_algo}: hoàn thành.")
+                            self.set_result(
+                                f"Kết quả: {finished_algo}",
+                                ["Hoàn thành.", f"Số bước: {total_steps}", "Bảng đã đạt hình mẫu."],
+                            )
+                            self.show_notice(f"{finished_algo}: hoàn thành {total_steps} bước.")
                         else:
-                            self.add_log(f"{self.active_algo}: chưa đạt đích.")
+                            self.add_log(f"{finished_algo}: chưa đạt đích.")
+                            self.set_result(
+                                f"Kết quả: {finished_algo}",
+                                ["Chưa đạt đích.", f"Số bước: {total_steps}", f"h(n)={h_cost(self.puzzle.state, self.puzzle.goal)}"],
+                            )
+                            self.show_notice(f"{finished_algo}: dừng sau {total_steps} bước.")
                         self.active_algo = ""
                         self.paused = False
                         self.set_pause_button(False)
+
+            if self.demo_animating and not self.paused:
+                now = pygame.time.get_ticks()
+                if now - self.last_anim_time > SOLVE_DELAY_MS:
+                    self.play_next_demo_step()
+                    self.last_anim_time = now
 
             self.draw_ui()
             pygame.display.flip()
