@@ -66,76 +66,84 @@ Trong đó `0` biểu diễn ô trống.
 
 ## 0.2. GIF demo các thuật toán
 
-Các GIF demo được đặt trong thư mục `GIF/` ở cùng cấp với `README.md` và `main.py`. Khi bạn upload GIF lên GitHub, giữ đúng tên file trong bảng dưới đây để README tự hiển thị như hình minh họa.
+Các GIF demo được đặt trong thư mục `GIF/` ở cùng cấp với `README.md` và `main.py`. Bản README này đã được viết lại theo gói `GIF(2).zip` mới: có thêm GIF **giao diện chính** và GIF **IDS**.
 
-Cấu trúc cần có:
+Để GitHub load ổn định, các file trong bản đóng gói này đã được đổi sang tên sạch, không dấu cách, không ký tự tiếng Việt. Khi upload lên GitHub, hãy dùng đúng thư mục `GIF/` đi kèm file README này.
+
+Cấu trúc đúng trên GitHub:
 
 ```text
 .
+├── README.md
 ├── main.py
 ├── ui.py
-├── README.md
+├── grid.py
+├── utils.py
+├── algorithm_core.py
+├── algorithms_uninformed.py
+├── algorithms_informed.py
+├── algorithms_local.py
+├── algorithms_complex.py
+├── adversarial.py
 └── GIF/
+    ├── MAIN_INTERFACE.gif
     ├── BFS.gif
     ├── DFS.gif
+    ├── UCS.gif
+    ├── IDS.gif
+    ├── GREEDY.gif
     ├── A_STAR.gif
-    └── ...
+    ├── IDA_STAR.gif
+    ├── SIMPLE_HILL.gif
+    ├── STEEPEST_HILL.gif
+    ├── STOCHASTIC_HILL.gif
+    ├── RANDOM_RESTART.gif
+    ├── LOCAL_BEAM.gif
+    ├── SIMULATED_ANNEALING.gif
+    ├── NO_OBSERVATION.gif
+    ├── PARTIALLY_OBSERVATION.gif
+    ├── AND_OR.gif
+    ├── BACKTRACKING.gif
+    ├── AC_3.gif
+    ├── MIN_CONFLICT.gif
+    ├── MINIMAX.gif
+    ├── ALPHA_BETA.gif
+    └── EXPECTIMAX.gif
 ```
 
-> Lưu ý: phần dưới dùng thẻ `<img>` để GitHub hiển thị GIF trực tiếp trong bảng. Nếu GIF chưa được upload thì ô ảnh sẽ tạm thời chưa hiện; chỉ cần upload đúng tên file là bảng sẽ tự hoạt động.
+> Lưu ý: Trong file bạn gửi, phần giao diện chính và IDS đang là ảnh chụp màn hình. Mình đã chuyển hai ảnh này thành GIF tĩnh `MAIN_INTERFACE.gif` và `IDS.gif` để README gọi đúng định dạng GIF và load được trên GitHub.
 
-| Nhóm thuật toán | Thuật toán | GIF demo |
-|---|---|---|
-| Uninformed Search | BFS | <img src="./GIF/BFS.gif" width="360" alt="BFS demo"><br>`GIF/BFS.gif` |
-| Uninformed Search | DFS | <img src="./GIF/DFS.gif" width="360" alt="DFS demo"><br>`GIF/DFS.gif` |
-| Uninformed Search | UCS | <img src="./GIF/UCS.gif" width="360" alt="UCS demo"><br>`GIF/UCS.gif` |
-| Uninformed Search | IDS | <img src="./GIF/IDS.gif" width="360" alt="IDS demo"><br>`GIF/IDS.gif` |
-| Informed Search | Greedy Best-First Search | <img src="./GIF/GREEDY.gif" width="360" alt="Greedy Best-First Search demo"><br>`GIF/GREEDY.gif` |
-| Informed Search | A* Search | <img src="./GIF/A_STAR.gif" width="360" alt="A* Search demo"><br>`GIF/A_STAR.gif` |
-| Informed Search | IDA* Search | <img src="./GIF/IDA_STAR.gif" width="360" alt="IDA* Search demo"><br>`GIF/IDA_STAR.gif` |
-| Local Search | Simple Hill Climbing | <img src="./GIF/SIMPLE_HILL.gif" width="360" alt="Simple Hill Climbing demo"><br>`GIF/SIMPLE_HILL.gif` |
-| Local Search | Steepest-Ascent Hill Climbing | <img src="./GIF/STEEPEST_HILL.gif" width="360" alt="Steepest-Ascent Hill Climbing demo"><br>`GIF/STEEPEST_HILL.gif` |
-| Local Search | Stochastic Hill Climbing | <img src="./GIF/STOCHASTIC_HILL.gif" width="360" alt="Stochastic Hill Climbing demo"><br>`GIF/STOCHASTIC_HILL.gif` |
-| Local Search | Random-Restart Hill Climbing | <img src="./GIF/RANDOM_RESTART.gif" width="360" alt="Random-Restart Hill Climbing demo"><br>`GIF/RANDOM_RESTART.gif` |
-| Local Search | Local Beam Search | <img src="./GIF/LOCAL_BEAM.gif" width="360" alt="Local Beam Search demo"><br>`GIF/LOCAL_BEAM.gif` |
-| Local Search | Simulated Annealing | <img src="./GIF/SIMULATED_ANNEALING.gif" width="360" alt="Simulated Annealing demo"><br>`GIF/SIMULATED_ANNEALING.gif` |
-| Complex Environments | Search Without Start State / No Observation | <img src="./GIF/NO_OBSERVATION.gif" width="360" alt="Search Without Start State / No Observation demo"><br>`GIF/NO_OBSERVATION.gif` |
-| Complex Environments | Partially Observable Search | <img src="./GIF/PARTIALLY_OBSERVATION.gif" width="360" alt="Partially Observable Search demo"><br>`GIF/PARTIALLY_OBSERVATION.gif` |
-| Complex Environments | AND-OR Search | <img src="./GIF/AND_OR.gif" width="360" alt="AND-OR Search demo"><br>`GIF/AND_OR.gif` |
-| Complex Environments | Backtracking Search | <img src="./GIF/BACKTRACKING.gif" width="360" alt="Backtracking Search demo"><br>`GIF/BACKTRACKING.gif` |
-| Complex Environments | AC-3 | <img src="./GIF/AC_3.gif" width="360" alt="AC-3 demo"><br>`GIF/AC_3.gif` |
-| Complex Environments | Min-Conflicts | <img src="./GIF/MIN_CONFLICTS.gif" width="360" alt="Min-Conflicts demo"><br>`GIF/MIN_CONFLICTS.gif` |
-| Adversarial / Stochastic Search | Minimax | <img src="./GIF/MINIMAX.gif" width="360" alt="Minimax demo"><br>`GIF/MINIMAX.gif` |
-| Adversarial / Stochastic Search | Alpha-Beta Pruning | <img src="./GIF/ALPHA_BETA.gif" width="360" alt="Alpha-Beta Pruning demo"><br>`GIF/ALPHA_BETA.gif` |
-| Adversarial / Stochastic Search | Expectimax | <img src="./GIF/EXPECTIMAX.gif" width="360" alt="Expectimax demo"><br>`GIF/EXPECTIMAX.gif` |
+| Nhóm thuật toán | Thuật toán | GIF demo | File cần có trong repo |
+|---|---|---|---|
+| Giao diện | Giao diện chính | <img src="./GIF/MAIN_INTERFACE.gif" width="360" alt="Main interface demo"><br>[▶ Mở GIF](./GIF/MAIN_INTERFACE.gif) | `GIF/MAIN_INTERFACE.gif` |
+| Uninformed Search | BFS | <img src="./GIF/BFS.gif" width="360" alt="BFS demo"><br>[▶ Mở GIF](./GIF/BFS.gif) | `GIF/BFS.gif` |
+| Uninformed Search | DFS | <img src="./GIF/DFS.gif" width="360" alt="DFS demo"><br>[▶ Mở GIF](./GIF/DFS.gif) | `GIF/DFS.gif` |
+| Uninformed Search | UCS | <img src="./GIF/UCS.gif" width="360" alt="UCS demo"><br>[▶ Mở GIF](./GIF/UCS.gif) | `GIF/UCS.gif` |
+| Uninformed Search | IDS | <img src="./GIF/IDS.gif" width="360" alt="IDS demo"><br>[▶ Mở GIF](./GIF/IDS.gif) | `GIF/IDS.gif` |
+| Informed Search | Greedy Best-First Search | <img src="./GIF/GREEDY.gif" width="360" alt="Greedy demo"><br>[▶ Mở GIF](./GIF/GREEDY.gif) | `GIF/GREEDY.gif` |
+| Informed Search | A* Search | <img src="./GIF/A_STAR.gif" width="360" alt="A* Search demo"><br>[▶ Mở GIF](./GIF/A_STAR.gif) | `GIF/A_STAR.gif` |
+| Informed Search | IDA* Search | <img src="./GIF/IDA_STAR.gif" width="360" alt="IDA* Search demo"><br>[▶ Mở GIF](./GIF/IDA_STAR.gif) | `GIF/IDA_STAR.gif` |
+| Local Search | Simple Hill Climbing | <img src="./GIF/SIMPLE_HILL.gif" width="360" alt="Simple Hill Climbing demo"><br>[▶ Mở GIF](./GIF/SIMPLE_HILL.gif) | `GIF/SIMPLE_HILL.gif` |
+| Local Search | Steepest-Ascent Hill Climbing | <img src="./GIF/STEEPEST_HILL.gif" width="360" alt="Steepest-Ascent Hill Climbing demo"><br>[▶ Mở GIF](./GIF/STEEPEST_HILL.gif) | `GIF/STEEPEST_HILL.gif` |
+| Local Search | Stochastic Hill Climbing | <img src="./GIF/STOCHASTIC_HILL.gif" width="360" alt="Stochastic Hill Climbing demo"><br>[▶ Mở GIF](./GIF/STOCHASTIC_HILL.gif) | `GIF/STOCHASTIC_HILL.gif` |
+| Local Search | Random-Restart Hill Climbing | <img src="./GIF/RANDOM_RESTART.gif" width="360" alt="Random-Restart Hill Climbing demo"><br>[▶ Mở GIF](./GIF/RANDOM_RESTART.gif) | `GIF/RANDOM_RESTART.gif` |
+| Local Search | Local Beam Search | <img src="./GIF/LOCAL_BEAM.gif" width="360" alt="Local Beam Search demo"><br>[▶ Mở GIF](./GIF/LOCAL_BEAM.gif) | `GIF/LOCAL_BEAM.gif` |
+| Local Search | Simulated Annealing | <img src="./GIF/SIMULATED_ANNEALING.gif" width="360" alt="Simulated Annealing demo"><br>[▶ Mở GIF](./GIF/SIMULATED_ANNEALING.gif) | `GIF/SIMULATED_ANNEALING.gif` |
+| Complex Environments | Search Without Start State / No Observation | <img src="./GIF/NO_OBSERVATION.gif" width="360" alt="No Observation demo"><br>[▶ Mở GIF](./GIF/NO_OBSERVATION.gif) | `GIF/NO_OBSERVATION.gif` |
+| Complex Environments | Partially Observable Search | <img src="./GIF/PARTIALLY_OBSERVATION.gif" width="360" alt="Partially Observable demo"><br>[▶ Mở GIF](./GIF/PARTIALLY_OBSERVATION.gif) | `GIF/PARTIALLY_OBSERVATION.gif` |
+| Complex Environments | AND-OR Search | <img src="./GIF/AND_OR.gif" width="360" alt="AND-OR demo"><br>[▶ Mở GIF](./GIF/AND_OR.gif) | `GIF/AND_OR.gif` |
+| Complex Environments | Backtracking Search | <img src="./GIF/BACKTRACKING.gif" width="360" alt="Backtracking demo"><br>[▶ Mở GIF](./GIF/BACKTRACKING.gif) | `GIF/BACKTRACKING.gif` |
+| Constraint Satisfaction Problems | AC-3 | <img src="./GIF/AC_3.gif" width="360" alt="AC-3 demo"><br>[▶ Mở GIF](./GIF/AC_3.gif) | `GIF/AC_3.gif` |
+| Constraint Satisfaction Problems | Min-Conflicts | <img src="./GIF/MIN_CONFLICT.gif" width="360" alt="Min-Conflicts demo"><br>[▶ Mở GIF](./GIF/MIN_CONFLICT.gif) | `GIF/MIN_CONFLICT.gif` |
+| Adversarial / Stochastic Search | Minimax | <img src="./GIF/MINIMAX.gif" width="360" alt="Minimax demo"><br>[▶ Mở GIF](./GIF/MINIMAX.gif) | `GIF/MINIMAX.gif` |
+| Adversarial / Stochastic Search | Alpha-Beta Pruning | <img src="./GIF/ALPHA_BETA.gif" width="360" alt="Alpha-Beta demo"><br>[▶ Mở GIF](./GIF/ALPHA_BETA.gif) | `GIF/ALPHA_BETA.gif` |
+| Adversarial / Stochastic Search | Expectimax | <img src="./GIF/EXPECTIMAX.gif" width="360" alt="Expectimax demo"><br>[▶ Mở GIF](./GIF/EXPECTIMAX.gif) | `GIF/EXPECTIMAX.gif` |
 
-### Danh sách tên file GIF cần upload
+Nếu ảnh không hiện trên GitHub, kiểm tra lại 3 điểm sau:
 
-```text
-GIF/BFS.gif
-GIF/DFS.gif
-GIF/UCS.gif
-GIF/IDS.gif
-GIF/GREEDY.gif
-GIF/A_STAR.gif
-GIF/IDA_STAR.gif
-GIF/SIMPLE_HILL.gif
-GIF/STEEPEST_HILL.gif
-GIF/STOCHASTIC_HILL.gif
-GIF/RANDOM_RESTART.gif
-GIF/LOCAL_BEAM.gif
-GIF/SIMULATED_ANNEALING.gif
-GIF/NO_OBSERVATION.gif
-GIF/PARTIALLY_OBSERVATION.gif
-GIF/AND_OR.gif
-GIF/BACKTRACKING.gif
-GIF/AC_3.gif
-GIF/MIN_CONFLICTS.gif
-GIF/MINIMAX.gif
-GIF/ALPHA_BETA.gif
-GIF/EXPECTIMAX.gif
-```
-
+1. `README.md` phải nằm cùng cấp với thư mục `GIF/`.
+2. Tên thư mục phải đúng là `GIF`, không phải `gif`, `Gif` hoặc `GIF(2)`.
+3. Tên file phải giống chính xác như bảng trên, ví dụ `ALPHA_BETA.gif`, `SIMPLE_HILL.gif`, `MAIN_INTERFACE.gif`, `IDS.gif`.
 
 ---
 
