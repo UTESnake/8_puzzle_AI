@@ -827,43 +827,7 @@ Người dùng bấm trực tiếp vào nút thuật toán. Nếu thuật toán 
 
 ---
 
-## 15. Kiểm tra trước khi nộp
-
-Trước khi nộp hoặc push lên GitHub, nên kiểm tra các bước sau:
-
-```bash
-python -m py_compile main.py ui.py grid.py utils.py algorithm_core.py algorithms_uninformed.py algorithms_informed.py algorithms_local.py algorithms_complex.py adversarial.py
-python -m pip install pygame
-python main.py
-```
-
-Checklist:
-
-- [ ] Chạy được `python main.py`.
-- [ ] Không còn bọc code trong thư mục con không cần thiết trên GitHub.
-- [ ] `README.md` nằm cùng cấp với `main.py`.
-- [ ] Thư mục `GIF/` nằm cùng cấp với `README.md`.
-- [ ] File `GIF/UI.png` và các file `.gif` vẫn giữ đúng tên như trong README.
-- [ ] Các nút BFS, DFS, UCS, IDS, Greedy, A*, IDA* chạy được.
-- [ ] Nhóm local search có thể dừng trước goal và điều này được giải thích trong báo cáo.
-- [ ] Nhóm adversarial/stochastic được trình bày là demo Caro 3x3, không phải solver 8-Puzzle.
-
----
-
-## 16. Lưu ý khi trình bày báo cáo
-
-Một số điểm cần nhấn mạnh khi bảo vệ bài:
-
-1. **8-Puzzle là deterministic, fully observable, single-agent**, nên BFS, UCS, A* và IDA* là các solver phù hợp nhất.
-2. **Greedy dùng `h(n)` nên nhanh nhưng không tối ưu**.
-3. **A* dùng `f(n)=g(n)+h(n)` nên cân bằng giữa chi phí đã đi và ước lượng còn lại**.
-4. **Local search không đảm bảo tìm goal**, vì nó có thể mắc kẹt ở local optimum, plateau hoặc đi theo hướng ngẫu nhiên.
-5. **Complex environment** trong dự án chủ yếu dùng để minh họa các biến thể học thuật như quan sát một phần, tìm ngược, AND-OR, CSP.
-6. **Minimax, Alpha-Beta, Expectimax được demo bằng Caro 3x3**, vì 8-Puzzle không có đối thủ thật.
-
----
-
-## 17. Kết luận
+## 15. Kết luận
 
 Dự án đã xây dựng một chương trình trực quan hóa 8-Puzzle bằng Python và Pygame, đồng thời cài đặt nhiều nhóm thuật toán tìm kiếm trong Trí tuệ nhân tạo. Chương trình không chỉ cho phép người dùng quan sát lời giải của bài toán 8-Puzzle mà còn giúp so sánh bản chất của từng thuật toán thông qua cách chọn node, sử dụng frontier, reached, heuristic và hàm chi phí.
 
