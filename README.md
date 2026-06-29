@@ -141,132 +141,112 @@ Các GIF thuật toán nằm trong thư mục `GIF/` cùng cấp với `README.m
     <tr>
       <td>Uninformed Search</td>
       <td><b>BFS</b></td>
-      <td><code>GIF/BFS.gif</code></td>
+      <td><a href="./GIF/BFS.gif"><img src="./GIF/BFS.gif" width="420" alt="BFS demo"></a></td>
     </tr>
     <tr>
       <td>Uninformed Search</td>
       <td><b>DFS</b></td>
-      <td><code>GIF/DFS.gif</code></td>
+      <td><a href="./GIF/DFS.gif"><img src="./GIF/DFS.gif" width="420" alt="DFS demo"></a></td>
     </tr>
     <tr>
       <td>Uninformed Search</td>
       <td><b>UCS</b></td>
       <td><a href="./GIF/UCS.gif"><img src="./GIF/UCS.gif" width="420" alt="UCS demo"></a></td>
-      <td><code>GIF/UCS.gif</code></td>
     </tr>
     <tr>
       <td>Uninformed Search</td>
       <td><b>IDS</b></td>
       <td><a href="./GIF/IDS.gif"><img src="./GIF/IDS.gif" width="420" alt="IDS demo"></a></td>
-      <td><code>GIF/IDS.gif</code></td>
     </tr>
     <tr>
       <td>Informed Search</td>
       <td><b>Greedy Best-First Search</b></td>
       <td><a href="./GIF/GREEDY.gif"><img src="./GIF/GREEDY.gif" width="420" alt="Greedy Best-First Search demo"></a></td>
-      <td><code>GIF/GREEDY.gif</code></td>
     </tr>
     <tr>
       <td>Informed Search</td>
       <td><b>A* Search</b></td>
       <td><a href="./GIF/A_STAR.gif"><img src="./GIF/A_STAR.gif" width="420" alt="A* Search demo"></a></td>
-      <td><code>GIF/A_STAR.gif</code></td>
     </tr>
     <tr>
       <td>Informed Search</td>
       <td><b>IDA* Search</b></td>
       <td><a href="./GIF/IDA_STAR.gif"><img src="./GIF/IDA_STAR.gif" width="420" alt="IDA* Search demo"></a></td>
-      <td><code>GIF/IDA_STAR.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Simple Hill Climbing</b></td>
       <td><a href="./GIF/SIMPLE%20HILL.gif"><img src="./GIF/SIMPLE%20HILL.gif" width="420" alt="Simple Hill Climbing demo"></a></td>
-      <td><code>GIF/SIMPLE HILL.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Steepest-Ascent Hill Climbing</b></td>
       <td><a href="./GIF/STEEPEST%20HILL.gif"><img src="./GIF/STEEPEST%20HILL.gif" width="420" alt="Steepest-Ascent Hill Climbing demo"></a></td>
-      <td><code>GIF/STEEPEST HILL.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Stochastic Hill Climbing</b></td>
       <td><a href="./GIF/STOCHASTIC%20HILL.gif"><img src="./GIF/STOCHASTIC%20HILL.gif" width="420" alt="Stochastic Hill Climbing demo"></a></td>
-      <td><code>GIF/STOCHASTIC HILL.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Random-Restart Hill Climbing</b></td>
       <td><a href="./GIF/RANDOM%20RESTART.gif"><img src="./GIF/RANDOM%20RESTART.gif" width="420" alt="Random-Restart Hill Climbing demo"></a></td>
-      <td><code>GIF/RANDOM RESTART.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Local Beam Search</b></td>
       <td><a href="./GIF/LOCAL%20BEAM.gif"><img src="./GIF/LOCAL%20BEAM.gif" width="420" alt="Local Beam Search demo"></a></td>
-      <td><code>GIF/LOCAL BEAM.gif</code></td>
     </tr>
     <tr>
       <td>Local Search</td>
       <td><b>Simulated Annealing</b></td>
       <td><a href="./GIF/SIMULATED%20ANNEALING.gif"><img src="./GIF/SIMULATED%20ANNEALING.gif" width="420" alt="Simulated Annealing demo"></a></td>
-      <td><code>GIF/SIMULATED ANNEALING.gif</code></td>
     </tr>
     <tr>
       <td>Complex Environments</td>
       <td><b>Search Without Start State / No Observation</b></td>
       <td><a href="./GIF/NO%20OBSERVATION.gif"><img src="./GIF/NO%20OBSERVATION.gif" width="420" alt="Search Without Start State / No Observation demo"></a></td>
-      <td><code>GIF/NO OBSERVATION.gif</code></td>
     </tr>
     <tr>
       <td>Complex Environments</td>
       <td><b>Partially Observable Search</b></td>
       <td><a href="./GIF/PARTIALLY%20OBSERVATION.gif"><img src="./GIF/PARTIALLY%20OBSERVATION.gif" width="420" alt="Partially Observable Search demo"></a></td>
-      <td><code>GIF/PARTIALLY OBSERVATION.gif</code></td>
     </tr>
     <tr>
       <td>Complex Environments</td>
       <td><b>AND-OR Search</b></td>
       <td><a href="./GIF/AND%20OR.gif"><img src="./GIF/AND%20OR.gif" width="420" alt="AND-OR Search demo"></a></td>
-      <td><code>GIF/AND OR.gif</code></td>
     </tr>
     <tr>
       <td>Complex Environments</td>
       <td><b>Backtracking Search</b></td>
       <td><a href="./GIF/BACKTRACKING.gif"><img src="./GIF/BACKTRACKING.gif" width="420" alt="Backtracking Search demo"></a></td>
-      <td><code>GIF/BACKTRACKING.gif</code></td>
     </tr>
     <tr>
       <td>Constraint Satisfaction Problems</td>
       <td><b>AC-3</b></td>
       <td><a href="./GIF/AC-3.gif"><img src="./GIF/AC-3.gif" width="420" alt="AC-3 demo"></a></td>
-      <td><code>GIF/AC-3.gif</code></td>
     </tr>
     <tr>
       <td>Constraint Satisfaction Problems</td>
       <td><b>Min-Conflicts</b></td>
       <td><a href="./GIF/MIN%20CONFLICT.gif"><img src="./GIF/MIN%20CONFLICT.gif" width="420" alt="Min-Conflicts demo"></a></td>
-      <td><code>GIF/MIN CONFLICT.gif</code></td>
     </tr>
     <tr>
       <td>Adversarial / Stochastic Search</td>
       <td><b>Minimax</b></td>
       <td><a href="./GIF/MINIMAX.gif"><img src="./GIF/MINIMAX.gif" width="420" alt="Minimax demo"></a></td>
-      <td><code>GIF/MINIMAX.gif</code></td>
     </tr>
     <tr>
       <td>Adversarial / Stochastic Search</td>
       <td><b>Alpha-Beta Pruning</b></td>
       <td><a href="./GIF/ALPHA%20BETA.gif"><img src="./GIF/ALPHA%20BETA.gif" width="420" alt="Alpha-Beta Pruning demo"></a></td>
-      <td><code>GIF/ALPHA BETA.gif</code></td>
     </tr>
     <tr>
       <td>Adversarial / Stochastic Search</td>
       <td><b>Expectimax</b></td>
       <td><a href="./GIF/EXPECTIMAX.gif"><img src="./GIF/EXPECTIMAX.gif" width="420" alt="Expectimax demo"></a></td>
-      <td><code>GIF/EXPECTIMAX.gif</code></td>
     </tr>
   </tbody>
 </table>
