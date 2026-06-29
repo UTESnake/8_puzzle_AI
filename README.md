@@ -141,13 +141,11 @@ Các GIF thuật toán nằm trong thư mục `GIF/` cùng cấp với `README.m
     <tr>
       <td>Uninformed Search</td>
       <td><b>BFS</b></td>
-      <td><a href="./GIF/BFS.gif"><img src="./GIF/BFS.gif" width="420" alt="BFS demo"></a></td>
       <td><code>GIF/BFS.gif</code></td>
     </tr>
     <tr>
       <td>Uninformed Search</td>
       <td><b>DFS</b></td>
-      <td><a href="./GIF/DFS.gif"><img src="./GIF/DFS.gif" width="420" alt="DFS demo"></a></td>
       <td><code>GIF/DFS.gif</code></td>
     </tr>
     <tr>
