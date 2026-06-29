@@ -135,7 +135,6 @@ Các GIF thuật toán nằm trong thư mục `GIF/` cùng cấp với `README.m
       <th>Nhóm thuật toán</th>
       <th>Thuật toán</th>
       <th>Demo</th>
-      <th>File cần có trong repo</th>
     </tr>
   </thead>
   <tbody>
