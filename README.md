@@ -769,9 +769,9 @@ f(n) = g(n) + h(n)
 
 ---
 
-## 13. Kết quả tham khảo trên trạng thái mặc định
+## 13. Kết quả thực nghiệm
 
-Bảng dưới đây là kết quả tham khảo khi chạy trực tiếp các hàm thuật toán trên trạng thái mặc định. Các thuật toán có yếu tố ngẫu nhiên có thể thay đổi giữa các lần chạy.
+Bảng dưới đây là kết quả thực nghiệm khi chạy trực tiếp các hàm thuật toán trên trạng thái mặc định. Các thuật toán có yếu tố ngẫu nhiên có thể thay đổi giữa các lần chạy.
 
 | Thuật toán | Số bước/độ dài path tham khảo | Trạng thái kết quả | Ghi chú |
 |---|---:|---|---|
